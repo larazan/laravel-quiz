@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('quiz_plays', function (Blueprint $table) {
             $table->id();
+            // Foreign key to link to the users table, can be nullable for guest plays
+            $table->foreignId('user_id')
+                  ->nullable()
+                  ->constrained()
+                  ->onDelete('set null');
+            
+            // Foreign key to link to the quizzes table
+            $table->foreignId('quiz_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+            
+            $table->integer('score')->default(0);
+            $table->integer('time_taken')->nullable(); // in seconds
+            $table->timestamp('started_at')->useCurrent();
+            $table->timestamp('finished_at')->nullable();
+            
             $table->timestamps();
         });
     }

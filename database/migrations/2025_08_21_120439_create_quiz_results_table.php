@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('quiz_results', function (Blueprint $table) {
             $table->id();
+            // Foreign key to link to the overall quiz play record
+            $table->foreignId('quiz_play_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+            
+            // Foreign key to link to the specific question
+            $table->foreignId('question_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+
+            $table->text('user_answer'); // The text or ID of the user's answer
+            $table->boolean('is_correct');
+            $table->integer('time_to_answer'); // Time taken to answer this specific question in seconds
             $table->timestamps();
         });
     }

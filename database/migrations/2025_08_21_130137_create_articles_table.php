@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
+            $table->integer('category_id');
+            $table->foreignId('author_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('title');
+            $table->string('slug');
+            $table->string('rand_id');
+            $table->text('body');
+            $table->string('locale', 5)->default('en');
+            $table->bigInteger('view_count')->nullable();
+            $table->text('article_tags')->nullable();
+            $table->string('status',10);
+            $table->string('original')->nullable();
+            $table->boolean('is_highlight')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
