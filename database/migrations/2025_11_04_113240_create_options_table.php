@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('answers', function (Blueprint $table) {
+        Schema::create('options', function (Blueprint $table) {
             $table->id();
             $table->foreignId('question_id')->constrained()->cascadeOnDelete();
-
-            $table->text('answer_text');
-            $table->boolean('is_correct')->default(false); // For multiple-choice correct answers
-            $table->string('regex_pattern')->nullable(); // For text-input validation
-            $table->string('group_name')->nullable(); // For grouping related answers
-            $table->json('data')->nullable(); // To store extra data
+            $table->string('label')->nullable();          // e.g. "A", "B" (optional)
+            $table->text('text');
+            $table->string('image_path')->nullable();
+            $table->boolean('is_correct')->default(false);
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('answers');
+        Schema::dropIfExists('options');
     }
 };

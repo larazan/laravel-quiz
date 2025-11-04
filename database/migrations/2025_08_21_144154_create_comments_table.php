@@ -20,6 +20,8 @@ return new class extends Migration
 
             // Polymorphic columns
             $table->morphs('commentable'); // This creates commentable_id (unsignedBigInteger) and commentable_type (string)
+            // Add this line for replies
+            $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
             $table->timestamps();
         });
     }

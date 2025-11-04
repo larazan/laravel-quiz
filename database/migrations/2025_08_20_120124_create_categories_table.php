@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('status');
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories');

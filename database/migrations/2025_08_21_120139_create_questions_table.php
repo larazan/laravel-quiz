@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            // Foreign key to link to the quizzes table, with cascading deletion
-            $table->foreignId('quiz_id')
-                  ->constrained()
-                  ->onDelete('cascade');
-            
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('type_id')->nullable()->constrained()->cascadeOnDelete();
             $table->text('question_text');
-            $table->string('answer_type')->default('text_input'); // e.g., 'text_input', 'multiple_choice'
-            $table->unsignedSmallInteger('order'); // To maintain the quiz order
+            $table->string('image_path')->nullable();
+            $table->enum('difficulty', ['easy','medium','hard'])->default('easy');
+            $table->integer('points')->default(1);
+            $table->unsignedInteger('time_limit_seconds')->nullable();
+            $table->unsignedTinyInteger('order')->default(0);
+            $table->boolean('is_private')->default(false);
             $table->text('hint')->nullable(); // Optional hint for the question
             $table->timestamps();
         });

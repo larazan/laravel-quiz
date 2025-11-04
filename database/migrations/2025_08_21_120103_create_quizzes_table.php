@@ -13,25 +13,21 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete();
+            
             $table->string('title');
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
-            
-            // Foreign key for the quiz creator
-            $table->foreignId('user_id')
-                  ->constrained()
-                  ->onDelete('set null'); // Set to null if the user is deleted
-            
-            // Foreign key to the categories table
-            $table->foreignId('category_id')
-                  ->constrained()
-                  ->onDelete('set null'); // Set to null if the category is deleted
-            
-            $table->string('quiz_type')->default('text'); // e.g., 'text', 'map_click'
-            $table->string('slug')->unique(); // Unique slug for friendly URLs
+            $table->string('image_path')->nullable();
+            $table->enum('difficulty', ['easy','medium','hard'])->default('easy');
+            $table->unsignedInteger('time_limit_seconds')->nullable(); // null = untimed
+            $table->enum('display_mode', ['all', 'one_by_one'])->default('all');
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_published')->default(false);
+            $table->boolean('is_approved')->default(false);
+            $table->boolean('is_private')->default(false);
             $table->unsignedBigInteger('times_played')->default(0); // Counter for times played
-            $table->string('difficulty')->default('easy');
             $table->timestamps();
         });
     }
