@@ -13,17 +13,11 @@ return new class extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            // Foreign key to link to the users table
-            $table->foreignId('user_id')
-                  ->constrained()
-                  ->onDelete('cascade');
-            
-            // Foreign key to link to the quizzes table
-            $table->foreignId('quiz_id')
-                  ->constrained()
-                  ->onDelete('cascade');
-            
-            $table->unsignedTinyInteger('rating'); // Stores a small integer (1-5)
+            $table->foreignId('quiz_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('guest_token')->nullable()->index();
+            $table->tinyInteger('rating')->default(0); // 1–5
+            $table->text('comment')->nullable();
             $table->timestamps(); // created_at and updated_at
 
             // Prevents a user from rating the same quiz more than once

@@ -15,9 +15,11 @@ class Rating extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
         'quiz_id',
+        'user_id',
+        'guest_token',
         'rating',
+        'comment'
     ];
 
     /**

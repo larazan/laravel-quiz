@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ✅ Put your custom base layer after @tailwind base */
+@layer base {
+    html {
+      scroll-behavior: smooth;
+    }
+  }

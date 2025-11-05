@@ -1,12 +1,102 @@
 <script setup>
-import Navbar from '@/Components/layouts/Navbar.vue';
+import Navbar from '@/Pages/Admin/Components/Navbar.vue';
+import Sidebar from '@/Pages/Admin/Components/Sidebar.vue';
 
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+    initFlowbite();
+})
+
+// sidebar
+const sidebar = document.getElementById('sidebar');
+
+if (sidebar) {
+    const toggleSidebarMobile = (sidebar, sidebarBackdrop, toggleSidebarMobileHamburger, toggleSidebarMobileClose) => {
+        sidebar.classList.toggle('hidden');
+        sidebarBackdrop.classList.toggle('hidden');
+        toggleSidebarMobileHamburger.classList.toggle('hidden');
+        toggleSidebarMobileClose.classList.toggle('hidden');
+    }
+    
+    const toggleSidebarMobileEl = document.getElementById('toggleSidebarMobile');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const toggleSidebarMobileHamburger = document.getElementById('toggleSidebarMobileHamburger');
+    const toggleSidebarMobileClose = document.getElementById('toggleSidebarMobileClose');
+    const toggleSidebarMobileSearch = document.getElementById('toggleSidebarMobileSearch');
+    
+    toggleSidebarMobileSearch.addEventListener('click', () => {
+        toggleSidebarMobile(sidebar, sidebarBackdrop, toggleSidebarMobileHamburger, toggleSidebarMobileClose);
+    });
+    
+    toggleSidebarMobileEl.addEventListener('click', () => {
+        toggleSidebarMobile(sidebar, sidebarBackdrop, toggleSidebarMobileHamburger, toggleSidebarMobileClose);
+    });
+    
+    sidebarBackdrop.addEventListener('click', () => {
+        toggleSidebarMobile(sidebar, sidebarBackdrop, toggleSidebarMobileHamburger, toggleSidebarMobileClose);
+    });
+}
+
+// dark mode
+const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+// Change the icons inside the button based on previous settings
+if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    themeToggleLightIcon.classList.remove('hidden');
+} else {
+    themeToggleDarkIcon.classList.remove('hidden');
+}
+
+const themeToggleBtn = document.getElementById('theme-toggle');
+
+let event = new Event('dark-mode');
+
+themeToggleBtn.addEventListener('click', function() {
+
+    // toggle icons
+    themeToggleDarkIcon.classList.toggle('hidden');
+    themeToggleLightIcon.classList.toggle('hidden');
+
+    // if set via local storage previously
+    if (localStorage.getItem('color-theme')) {
+        if (localStorage.getItem('color-theme') === 'light') {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+        }
+
+    // if NOT set via local storage previously
+    } else {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-theme', 'dark');
+        }
+    }
+
+    document.dispatchEvent(event);
+    
+});
 </script>
-
 <template>
-    <div>
+    <div class="antialiased bg-gray-50 dark:bg-gray-900">
         <Navbar />
+        <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+            <Sidebar />
+            <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+                <main>
 
-        <slot />
+                    <slot />
+                </main>
+            </div>
+        </div>
     </div>
 </template>
