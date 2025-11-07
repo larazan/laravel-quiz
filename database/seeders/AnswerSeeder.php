@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Attempt;
 use App\Models\QuizQuestion;
 use App\Models\Option;
-use App\Models\Answer;
+use App\Models\AttemptAnswer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,7 +29,7 @@ class AnswerSeeder extends Seeder
 
         foreach ($attempts as $attempt) {
             // Get questions linked to this quiz
-            $quizQuestions = DB::table('quiz_questions')
+            $quizQuestions = DB::table('quiz_question')
                 ->where('quiz_id', $attempt->quiz_id)
                 ->pluck('question_id');
 
@@ -48,7 +48,7 @@ class AnswerSeeder extends Seeder
                     $option = $options->where('is_correct', false)->random();
                 }
 
-                Answer::create([
+                AttemptAnswer::create([
                     'attempt_id'  => $attempt->id,
                     'question_id' => $questionId,
                     'option_id'   => $option?->id,

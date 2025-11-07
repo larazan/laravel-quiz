@@ -23,6 +23,8 @@ return new class extends Migration
             $table->boolean('is_correct')->nullable(); // stored after grading
             $table->integer('score')->default(0);
             $table->timestamps();
+
+            $table->unique(['attempt_id','question_id']);
         });
     }
 

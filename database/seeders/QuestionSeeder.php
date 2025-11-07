@@ -22,7 +22,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 1,
                 'image_path' => 'questions/paris.jpg',
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which country has the longest coastline in the world?',
@@ -30,7 +30,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 2,
                 'image_path' => 'questions/canada.jpg',
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Mount Kilimanjaro is located in which country?',
@@ -38,7 +38,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 3,
                 'image_path' => 'questions/kilimanjaro.jpg',
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What is the capital city of Italy?',
@@ -47,7 +47,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 4,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which city is the capital of Australia?',
@@ -56,7 +56,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 5,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What is the capital of Canada?',
@@ -65,7 +65,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 6,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which African country has Abuja as its capital?',
@@ -74,7 +74,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 7,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What is the capital city of Brazil?',
@@ -83,7 +83,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 8,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
 
             // 🧪 Science
@@ -93,7 +93,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 1,
                 'image_path' => null,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'How many bones are in the adult human body?',
@@ -101,7 +101,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 2,
                 'image_path' => null,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which planet has the most moons?',
@@ -109,7 +109,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 3,
                 'image_path' => 'questions/jupiter.jpg',
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What planet is known as the Red Planet?',
@@ -118,7 +118,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 4,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What gas do humans need to breathe in order to survive?',
@@ -127,7 +127,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 5,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What is H₂O commonly known as?',
@@ -136,7 +136,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 6,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'What part of the plant conducts photosynthesis?',
@@ -145,7 +145,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 7,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'How many planets are there in our solar system?',
@@ -154,7 +154,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 8,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
 
             //
@@ -165,7 +165,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 1,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'The Code of Hammurabi was a set of laws from which ancient civilization?',
@@ -174,7 +174,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 2,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Who was the famous Carthaginian general who crossed the Alps to fight Rome?',
@@ -183,7 +183,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 3,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'The Great Library of Alexandria was located in which ancient empire?',
@@ -192,7 +192,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 4,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which ancient civilization built Machu Picchu?',
@@ -201,7 +201,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 5,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
 
             // 🎬 Movies
@@ -211,7 +211,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 1,
                 'image_path' => 'questions/inception.jpg',
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'In which year was the first "Harry Potter" movie released?',
@@ -219,7 +219,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 2,
                 'image_path' => null,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => '“May the Force be with you.” — From which movie is this iconic quote?',
@@ -228,7 +228,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 3,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => '“I’m the king of the world!” — Which blockbuster features this line?',
@@ -237,7 +237,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 4,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => '“Here’s looking at you, kid.” — This quote is from which classic film?',
@@ -246,7 +246,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 5,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => '“Why so serious?” — Who delivers this chilling line?',
@@ -255,7 +255,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 6,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => '“You can’t handle the truth!” — Which courtroom drama features this quote?',
@@ -264,7 +264,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 7,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
 
             // ⚽ Sports
@@ -274,7 +274,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 1,
                 'image_path' => null,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which country won the FIFA World Cup in 2018?',
@@ -282,7 +282,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 2,
                 'image_path' => 'questions/worldcup.jpg',
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which country won the FIFA World Cup in 2018?',
@@ -291,7 +291,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 3,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'In basketball, how many points is a shot made from beyond the arc worth?',
@@ -300,7 +300,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 4,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Who has won the most Grand Slam titles in men’s tennis history?',
@@ -309,7 +309,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 5,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'Which athlete is known as “The Fastest Man Alive”?',
@@ -318,7 +318,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 6,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
             [
                 'question_text' => 'In baseball, how many players are on the field for one team during play?',
@@ -327,7 +327,7 @@ class QuestionSeeder extends Seeder
                 'time_limit_seconds' => [10, 15, 20][array_rand([10, 15, 20])],
                 'order' => 7,
                 'is_private' => false,
-                'created_by' => 1,
+                'user_id' => 1,
             ],
 
             

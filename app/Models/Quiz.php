@@ -13,8 +13,9 @@ class Quiz extends Model
     use HasSlug;
 
     protected $fillable = [
-        'category_id',
         'user_id',
+        'category_id',
+        'type_id',
         'title',
         'slug',
         'description',
@@ -25,6 +26,7 @@ class Quiz extends Model
         'is_published',
         'is_approved',
         'is_private',
+        'times_played'
     ];
 
     public function getRouteKeyName()
@@ -67,7 +69,7 @@ class Quiz extends Model
 
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'quiz_questions')
+        return $this->belongsToMany(Question::class, 'quiz_question')
             ->withPivot('order')
             ->orderBy('order');
     }

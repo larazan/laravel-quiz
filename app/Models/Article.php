@@ -2,11 +2,6 @@
 
 namespace App\Models;
 
-use App\Concerns\HasAuthor;
-use App\Concerns\HasLikes;
-use App\Concerns\HasSlug;
-use App\Concerns\HasTags;
-use App\Concerns\HasTimestamps;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,18 +9,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Scout\Searchable;
+use Spatie\Sluggable\HasSlug; // Import HasSlug
+use Spatie\Sluggable\SlugOptions; // Import SlugOptions
 
 class Article extends Model
 {
-    use HasFactory;
-    use HasAuthor;
-    use HasSlug;
-    use HasLikes;
-    use HasTimestamps;
-    use HasTags;
+    use HasFactory;    
     use SoftDeletes;
-    use Searchable;
+    use HasSlug;
 
     protected $fillable = [
         'category_id',
@@ -54,6 +45,17 @@ class Article extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+     /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title') // Generate slug from the 'name' attribute (translatable)
+            ->saveSlugsTo('slug')
+            ->doNotGenerateSlugsOnUpdate(); // Optional: only generate on creation
+    }
     
     /**
      * {@inheritdoc}

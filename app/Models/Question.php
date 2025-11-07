@@ -12,12 +12,15 @@ class Question extends Model
     // Define the mass assignable attributes
     protected $fillable = [
         'user_id',
+        'type_id',
         'question_text',
         'image_path',
+        'difficulty',
+        'points',
+        'time_limit_seconds',
         'order',
         'is_private',
-        'difficulty',
-        'time_limit_seconds',
+        'hint',
     ];
 
     /**

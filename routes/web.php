@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+// admin
+use App\Http\Controllers\Admin\UserController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +25,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+});
+
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
+    Route::patch('/user', [UserController::class, 'update'])->name('admin.user.update');
+    Route::delete('/user', [UserController::class, 'destroy'])->name('admin.user.destroy');
 });
 
 require __DIR__.'/auth.php';

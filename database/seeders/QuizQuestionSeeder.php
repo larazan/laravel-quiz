@@ -59,7 +59,7 @@ class QuizQuestionSeeder extends Seeder
             ['quiz_id' => 5, 'question_id' => 35, 'order' => 7],
         ];
 
-        DB::table('quiz_questions')->insert($questions);
+        DB::table('quiz_question')->insert($questions);
 
         $this->command->info('QuizQuestionSeeder completed successfully!');
     }
