@@ -47,6 +47,24 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'firstName' => 'required',
+            'lastName' => 'required',
+            'username' => 'required',
+            'email' => 'required',
+        ]);
+
+        $first_name = $request->firstName;
+        $last_name = $request->lastName;
+        $username = $request->username;
+        $email = $request->email;
+
+        User::create([
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'username' => $username,
+            'email' => $email,
+        ]);
     }
 
     /**
@@ -94,5 +112,7 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+        $user = User::find($id);
+        $user->delete();
     }
 }

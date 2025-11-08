@@ -2,6 +2,14 @@
 
 use App\Http\Controllers\ProfileController;
 // admin
+use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\QuizController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\Admin\UserController;
 
 use Illuminate\Foundation\Application;
@@ -29,7 +37,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
-    Route::get('/user', [UserController::class, 'index'])->name('admin.user.index');
+    Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
     Route::patch('/user', [UserController::class, 'update'])->name('admin.user.update');
     Route::delete('/user', [UserController::class, 'destroy'])->name('admin.user.destroy');
 });
