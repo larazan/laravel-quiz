@@ -27,14 +27,23 @@ class CategoryController extends Controller
         return Inertia::render('Admin/Category/Index', [
             'menuTasks' => 'active',
             'categories' => $categories,
-            'catParent' => $catParent,
+            'parentOption' => $catParent,
             'search' => $request->only('q'),
         ]);
     }
 
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $name = $request->firstName;
+        Category::create([
+            'name' => $name,
+        ]);
+
+        return redirect()->route('admin.category.index')->with('success', 'Category created successfully.');
     }
 
     public function update(Request $request, string $id)
@@ -50,6 +59,7 @@ class CategoryController extends Controller
         $category->parentId = $request->parent_id;
 
         $category->update();
+        return redirect()->route('admin.category.index')->with('success', 'Category updated successfully.');
     }
 
     public function destroy(string $id)
@@ -57,5 +67,17 @@ class CategoryController extends Controller
         //
         $category = Category::find($id);
         $category->delete();
+        return redirect()->back()->with('success', 'Category deleted successfully.');
+    }
+    
+    public function toggle(Category $category, Request $request)
+    {
+        $request->validate([
+            'is_active' => 'required|boolean',
+        ]);
+
+        $category->update(['is_active' => $request->is_active]);
+
+        return back()->with('success', 'Category status updated successfully!');
     }
 }

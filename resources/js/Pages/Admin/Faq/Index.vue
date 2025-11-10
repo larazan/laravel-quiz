@@ -2,25 +2,22 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import Pagination from '../Components/Pagination.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { limitWords } from '@/Utils/text.js'
 import { ref, reactive, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
-    users: Object,
+    faqs: Object,
     search: Object
 });
 
-const formUser = reactive({
-    firstName: null,
-    lastName: null,
-    userName: null,
-    email: null,
-    role: null
+const formFaq = reactive({
+    question: null,
+    answer: null,
 });
 
-const idUser = ref('');
-const idDeleteUser = ref('');
+const idFaq = ref('');
+const idDeleteFaq = ref('');
 
 const showEditModal = ref(false);
 const showCreateModal = ref(false);
@@ -33,24 +30,18 @@ const closeModal = () => {
 }
 
 // open edit modal
-const openEditModal = (user) => {
+const openEditModal = (faq) => {
     showEditModal.value = true;
-    formUser.firstName = user.first_name;
-    formUser.lastName = user.last_name;
-    formUser.userName = user.username;
-    formUser.email = user.email;
-    formUser.role = user.role;
-    idUser.value = user.id;
+    formFaq.question = faq.question;
+    formFaq.answer = faq.answer;
+    idFaq.value = faq.id;
 }
 
 // update method
-const updateUser = () => {
-    router.put('/admin/user/update/' + idUser.value, formUser);
-    formUser.firstName = null;
-    formUser.lastName = null;
-    formUser.userName = null;
-    formUser.email = null;
-    formUser.role = null;
+const updateFaq = () => {
+    router.put('/admin/faq/update/' + idFaq.value, formFaq);
+    formFaq.question = null;
+    formFaq.answer = null;
 
     closeModal();
 }
@@ -61,13 +52,10 @@ const openAddModal = () => {
 }
 
 // add method
-const addUser = () => {
-    router.post('/admin/user/create', formUser);
-    formUser.firstName = null;
-    formUser.lastName = null;
-    formUser.userName = null;
-    formUser.email = null;
-    formUser.role = null;
+const addFaq = () => {
+    router.post('/admin/faq/create', formFaq);
+    formFaq.question = null;
+    formFaq.answer = null;
 
     closeModal();
 }
@@ -75,12 +63,12 @@ const addUser = () => {
 // open delete modal
 const openDeleteModal = (id) => {
     showDeleteModal.value = true;
-    idDeleteUser.value = id;
+    idDeleteFaq.value = id;
 }
 
 // delete method
-const deleteUser = () => {
-    router.delete('/admin/user/delete' + idDeleteUser.value);
+const deleteFaq = () => {
+    router.delete('/admin/faq/delete' + idDeleteFaq.value);
     closeModal();
 
     Swal.fire({
@@ -96,7 +84,7 @@ const deleteUser = () => {
 const search = ref(props.search ?? '');
 
 watch(search, (value) => {
-    router.get('/admin/users', { q: value }, { preserveState: true, replace: true })
+    router.get('/admin/faqs', { q: value }, { preserveState: true, replace: true })
 });
 
 //  pagination
@@ -136,7 +124,7 @@ const pageTo = (url) => {
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <a href="#"
-                                        class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Users</a>
+                                        class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Faqs</a>
                                 </div>
                             </li>
                             <li>
@@ -153,18 +141,18 @@ const pageTo = (url) => {
                             </li>
                         </ol>
                     </nav>
-                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All users</h1>
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All faqs</h1>
                 </div>
                 <!-- end breadcrumb -->
                 <div class="sm:flex">
                     <div
                         class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
                         <div class="lg:pr-3">
-                            <label for="users-search" class="sr-only">Search</label>
+                            <label for="faqs-search" class="sr-only">Search</label>
                             <div class="relative mt-1 lg:w-64 xl:w-96">
-                                <input v-model="search" type="text" name="email" id="users-search"
+                                <input v-model="search" type="text" name="email" id="faqs-search"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Search for users">
+                                    placeholder="Search for faqs">
                             </div>
                         </div>
                         <div class="flex pl-0 mt-3 space-x-1 sm:pl-2 sm:mt-0">
@@ -215,7 +203,7 @@ const pageTo = (url) => {
                                     d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            Add user
+                            Add faq
                         </button>
                         <a href="#"
                             class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
@@ -247,20 +235,13 @@ const pageTo = (url) => {
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Name
+                                        Question
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Username
+                                        Answer
                                     </th>
-                                    <th scope="col"
-                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Role
-                                    </th>
-                                    <th scope="col"
-                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Level
-                                    </th>
+
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Status
@@ -273,7 +254,7 @@ const pageTo = (url) => {
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 
-                                <tr v-for="user in props.users.data" :key="user.id"
+                                <tr v-for="faq in props.faqs.data" :key="faq.id"
                                     class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="w-4 p-4">
                                         <div class="flex items-center">
@@ -282,69 +263,13 @@ const pageTo = (url) => {
                                             <label for="checkbox-1" class="sr-only">checkbox</label>
                                         </div>
                                     </td>
-                                    <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-                                        <div class="w-10 h-10  rounded-full border-2">
-                                            <span class="flex items-center p-1">
-                                                <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
-                                                    role="img" class="iconify iconify--twemoji"
-                                                    preserveAspectRatio="xMidYMid meet" fill="#000000">
-                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                        stroke-linejoin="round"></g>
-                                                    <g id="SVGRepo_iconCarrier">
-                                                        <ellipse fill="#F4900C" cx="33.5" cy="14.5" rx="2.5" ry="3.5">
-                                                        </ellipse>
-                                                        <ellipse fill="#F4900C" cx="2.5" cy="14.5" rx="2.5" ry="3.5">
-                                                        </ellipse>
-                                                        <path fill="#FFAC33"
-                                                            d="M34 19a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v9zM7 19a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v9z">
-                                                        </path>
-                                                        <path fill="#FFCC4D"
-                                                            d="M28 5c0 2.761-4.478 4-10 4C12.477 9 8 7.761 8 5s4.477-5 10-5c5.522 0 10 2.239 10 5z">
-                                                        </path>
-                                                        <path fill="#F4900C"
-                                                            d="M25 4.083C25 5.694 21.865 7 18 7c-3.866 0-7-1.306-7-2.917c0-1.611 3.134-2.917 7-2.917c3.865 0 7 1.306 7 2.917z">
-                                                        </path>
-                                                        <path fill="#269"
-                                                            d="M30 5.5C30 6.881 28.881 7 27.5 7h-19C7.119 7 6 6.881 6 5.5S7.119 3 8.5 3h19A2.5 2.5 0 0 1 30 5.5z">
-                                                        </path>
-                                                        <path fill="#55ACEE"
-                                                            d="M30 6H6a2 2 0 0 0-2 2v26h28V8a2 2 0 0 0-2-2z"></path>
-                                                        <path fill="#3B88C3"
-                                                            d="M35 33v-1a2 2 0 0 0-2-2H22.071l-3.364 3.364a.999.999 0 0 1-1.414 0L13.929 30H3a2 2 0 0 0-2 2v1c0 1.104-.104 2 1 2h32c1.104 0 1-.896 1-2z">
-                                                        </path>
-                                                        <circle fill="#FFF" cx="24.5" cy="14.5" r="4.5"></circle>
-                                                        <circle fill="#DD2E44" cx="24.5" cy="14.5" r="2.721"></circle>
-                                                        <circle fill="#FFF" cx="11.5" cy="14.5" r="4.5"></circle>
-                                                        <path fill="#F5F8FA"
-                                                            d="M29 25.5a2.5 2.5 0 0 1-2.5 2.5h-17a2.5 2.5 0 1 1 0-5h17a2.5 2.5 0 0 1 2.5 2.5z">
-                                                        </path>
-                                                        <path fill="#CCD6DD"
-                                                            d="M17 23h2v5h-2zm-5 0h2v5h-2zm10 0h2v5h-2zM7 25.5a2.5 2.5 0 0 0 2 2.45v-4.9a2.5 2.5 0 0 0-2 2.45zm20-2.45v4.899a2.5 2.5 0 0 0 0-4.899z">
-                                                        </path>
-                                                        <circle fill="#DD2E44" cx="11.5" cy="14.5" r="2.721"></circle>
-                                                    </g>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <!-- <img class="w-10 h-10 rounded-full" src="https://flowbite-admin-dashboard.vercel.app/images/users/neil-sims.png" alt="Neil Sims avatar"> -->
-                                        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                            <div class="text-base font-semibold text-gray-900 dark:text-white">{{
-                                                user.first_name }} {{ user.last_name }}</div>
-                                            <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{
-                                                user.email }}</div>
-                                        </div>
-                                    </td>
+
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-                                        @{{ user.username }}</td>
+                                        {{ faq.question }}</td>
                                     <td
                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ user.role }}</td>
-                                    <td
-                                        class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        United States</td>
+                                        {{ limitWords(faq.answer, 10) }}</td>
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
                                         <div class="flex items-center">
@@ -352,7 +277,7 @@ const pageTo = (url) => {
                                         </div>
                                     </td>
                                     <td class="p-4 space-x-2 whitespace-nowrap">
-                                        <button @click="openEditModal(user)" type="button"
+                                        <button @click="openEditModal(faq)" type="button"
                                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -365,8 +290,8 @@ const pageTo = (url) => {
                                             </svg>
                                             Edit
                                         </button>
-                                        <button @click="openDeleteModal(user.id)" type="button"
-                                            data-modal-target="delete-user-modal" data-modal-toggle="delete-user-modal"
+                                        <button @click="openDeleteModal(faq.id)" type="button"
+                                            data-modal-target="delete-faq-modal" data-modal-toggle="delete-faq-modal"
                                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -385,8 +310,6 @@ const pageTo = (url) => {
                 </div>
             </div>
         </div>
-
-        <Pagination :data="props.users" />
 
         <!--  -->
         <div
@@ -409,16 +332,16 @@ const pageTo = (url) => {
                     </svg>
                 </a>
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span
-                        class="font-semibold text-gray-900 dark:text-white">1-{{ props.users.per_page }}</span> of <span
-                        class="font-semibold text-gray-900 dark:text-white">{{ props.users.total }}</span></span>
+                        class="font-semibold text-gray-900 dark:text-white">1-{{ props.faqs.per_page }}</span> of <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ props.faqs.total }}</span></span>
             </div>
             <!-- pagi -->
-            <nav aria-label="Page navigation example" v-if="props.users.per_page">
+            <nav aria-label="Page navigation example" v-if="props.faqs.per_page">
                 <ul class="flex items-center -space-x-px h-10 text-base">
 
-                    <li v-for="(item, index) in props.users.links" :key="index">
+                    <li v-for="(item, index) in props.faqs.links" :key="index">
                         <a href="#" @click="pageTo(item.url)"
-                            :class="{ 'bg-blue-400 text-white hover:text-white hover:cursor-text hover:bg-blue-400': item.active }"
+                            :class="{ 'bg-primary-400 text-white hover:text-white hover:cursor-text hover:bg-primary-400': item.active }"
                             class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                             v-html="item.label"></a>
                     </li>
@@ -426,9 +349,6 @@ const pageTo = (url) => {
 
                 </ul>
             </nav>
-
-
-
             <!--  -->
             <div class="flex2 hidden items-center space-x-3">
                 <a href="#"
@@ -456,7 +376,7 @@ const pageTo = (url) => {
 
         <!--  -->
 
-        <!-- Edit User Modal -->
+        <!-- Edit Faq Modal -->
         <Modal :show="showEditModal" maxWidth="xl">
             <div class="">
                 <!-- Modal content -->
@@ -464,7 +384,7 @@ const pageTo = (url) => {
                     <!-- Modal header -->
                     <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
                         <h3 class="text-xl font-semibold dark:text-white">
-                            Edit user
+                            Edit faq
                         </h3>
                         <button @click="closeModal()" type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white">
@@ -477,59 +397,27 @@ const pageTo = (url) => {
                         </button>
                     </div>
                     <!-- Modal body -->
-                    <form @submit.prevent="updateUser">
+                    <form @submit.prevent="updateFaq">
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="first-name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
-                                        Name</label>
-                                    <input type="text" name="first-name" v-model="formUser.firstName" id="first-name"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Bonnie" required>
+                                <div class="col-span-6">
+                                    <label for="question"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Question
+                                    </label>
+                                    <textarea v-model="formFaq.question" id="question" rows="4"
+                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Enter Question here"></textarea>
                                 </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="last-name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
-                                        Name</label>
-                                    <input type="text" name="last-name" v-model="formUser.lastName" id="last-name"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Green" required>
+                                <div class="col-span-6">
+                                    <label for="answer"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Answer
+                                    </label>
+                                    <textarea v-model="formFaq.answer" id="answer" rows="4"
+                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Enter Answer here"></textarea>
                                 </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="email"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                    <input type="email" name="email" v-model="formUser.email" id="email"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="example@company.com" required>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="position"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
-                                    <input type="text" name="username" v-model="formUser.userName" id="username"
-                                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="username" disabled readonly>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="countries"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
-                                    <select v-model="formUser.role"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                        <option selected>Choose a role</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="general">General</option>
-                                        <option value="FR">France</option>
-                                    </select>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="current-password"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                    <input type="password" name="current-password" value="••••••••"
-                                        id="current-password"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="••••••••" required>
-                                </div>
-
 
                             </div>
                         </div>
@@ -549,7 +437,7 @@ const pageTo = (url) => {
         </Modal>
 
 
-        <!-- Add User Modal -->
+        <!-- Add Faq Modal -->
         <Modal :show="showCreateModal" maxWidth="xl">
             <div class="">
                 <!-- Modal content -->
@@ -557,11 +445,11 @@ const pageTo = (url) => {
                     <!-- Modal header -->
                     <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
                         <h3 class="text-xl font-semibold dark:text-white">
-                            Add new user
+                            Add new faq
                         </h3>
                         <button @click="closeModal" type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                            data-modal-toggle="add-user-modal">
+                            data-modal-toggle="add-faq-modal">
                             <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -571,40 +459,27 @@ const pageTo = (url) => {
                         </button>
                     </div>
                     <!-- Modal body -->
-                    <form action="#" @submit.prevent="addUser">
+                    <form action="#" @submit.prevent="addFaq">
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="first-name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
-                                        Name</label>
-                                    <input type="text" v-model="firstName" name="first-name" id="first-name"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Bonnie" required>
+                                <div class="col-span-6">
+                                    <label for="question"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Question
+                                    </label>
+                                    <textarea v-model="formFaq.question" id="question" rows="4"
+                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Enter Question here"></textarea>
                                 </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="last-name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
-                                        Name</label>
-                                    <input type="text" v-model="lastName" name="last-name" id="last-name"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Green" required>
+                                <div class="col-span-6">
+                                    <label for="answer"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Answer
+                                    </label>
+                                    <textarea v-model="formFaq.answer" id="answer" rows="4"
+                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Enter Answer here"></textarea>
                                 </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="email"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                    <input type="email" v-model="email" name="email" id="email"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="example@company.com" required>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="username"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
-                                    <input type="text" v-model="username" name="username" id="username"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="e.g. React developer" required>
-                                </div>
-
                             </div>
                         </div>
                         <!-- Modal footer -->
@@ -622,7 +497,7 @@ const pageTo = (url) => {
             </div>
         </Modal>
 
-        <!-- Delete User Modal -->
+        <!-- Delete Faq Modal -->
         <Modal :show="showDeleteModal" closeable="" maxWidth="md">
             <div class="">
                 <div class="relative w-full h-full ">
@@ -632,7 +507,7 @@ const pageTo = (url) => {
                         <div class="flex justify-end p-2">
                             <button @click="closeModal()" type="button"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                                data-modal-hide="delete-user-modal">
+                                data-modal-hide="delete-faq-modal">
                                 <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd"
@@ -653,8 +528,8 @@ const pageTo = (url) => {
 
                             </div>
                             <h3 class="mt-5 mb-6 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to
-                                delete this user?</h3>
-                            <button @click="deleteUser()" type="button"
+                                delete this faq?</h3>
+                            <button @click="deleteFaq()" type="button"
                                 class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2 dark:focus:ring-red-800">
                                 Yes, I'm sure
                             </button>

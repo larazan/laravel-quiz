@@ -104,6 +104,7 @@ class UserController extends Controller
         $user->email = $request->email;
 
         $user->update();
+        return redirect()->route('admin.user.index')->with('success', 'User updated successfully.');
     }
 
     /**
@@ -114,5 +115,7 @@ class UserController extends Controller
         //
         $user = User::find($id);
         $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
     }
 }
