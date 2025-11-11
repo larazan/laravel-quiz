@@ -77,8 +77,16 @@ const openDeleteModal = (id) => {
 
 // delete method
 const deleteContact = () => {
-    router.delete('/admin/contact/delete' + idDeleteContact.value);
+    router.delete('/admin/contact/delete/' + idDeleteContact.value);
     closeModal();
+
+    Swal.fire({
+        toast: true,
+        icon: "success",
+        position: "top-end",
+        showConfirmButton: false,
+        title: page.props.flash.success
+    });
 }
 
 // search

@@ -80,7 +80,7 @@ const openDeleteModal = (id) => {
 
 // delete method
 const deleteUser = () => {
-    router.delete('/admin/user/delete' + idDeleteUser.value);
+    router.delete('/admin/user/delete/' + idDeleteUser.value);
     closeModal();
 
     Swal.fire({

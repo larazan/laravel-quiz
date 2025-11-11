@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 // admin
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ArticleController as ArticleAdminController;
 use App\Http\Controllers\Admin\CategoryController as CategoryAdminController;
 use App\Http\Controllers\Admin\ContactController as ContactAdminController;
@@ -15,6 +17,7 @@ use App\Http\Controllers\Admin\UserController as UserAdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -36,37 +39,46 @@ Route::middleware('auth')->group(function () {
 
 });
 
+Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function () {
+    Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('login', [AdminAuthController::class, 'login'])->name('admin.login.post');
+    Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+});
+
 Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::get('/users', [UserAdminController::class, 'index'])->name('admin.user.index');
     Route::patch('/user', [UserAdminController::class, 'update'])->name('admin.user.update');
     Route::delete('/user', [UserAdminController::class, 'destroy'])->name('admin.user.destroy');
 
     // category
     Route::get('/categories', [CategoryAdminController::class, 'index'])->name('admin.category.index');
-    Route::post('/category', [CategoryAdminController::class, 'store'])->name('admin.category.create');
-    Route::patch('/category', [CategoryAdminController::class, 'update'])->name('admin.category.update');
-    Route::delete('/category', [CategoryAdminController::class, 'destroy'])->name('admin.category.destroy');
+    Route::post('/category/create', [CategoryAdminController::class, 'store'])->name('admin.category.create');
+    Route::patch('/category/update/{id}', [CategoryAdminController::class, 'update'])->name('admin.category.update');
+    Route::delete('/category/delete/{id}', [CategoryAdminController::class, 'destroy'])->name('admin.category.destroy');
     Route::put('/categories/{category}/toggle', [CategoryAdminController::class, 'toggle'])->name('admin.category.toggle');
 
     // type
     Route::get('/types', [TypeAdminController::class, 'index'])->name('admin.type.index');
-    Route::post('/type', [TypeAdminController::class, 'store'])->name('admin.type.create');
-    Route::patch('/type', [TypeAdminController::class, 'update'])->name('admin.type.update');
-    Route::delete('/type', [TypeAdminController::class, 'destroy'])->name('admin.type.destroy');
+    Route::post('/type/create', [TypeAdminController::class, 'store'])->name('admin.type.create');
+    Route::patch('/type/update/{id}', [TypeAdminController::class, 'update'])->name('admin.type.update');
+    Route::delete('/type/delete/{id}', [TypeAdminController::class, 'destroy'])->name('admin.type.destroy');
     Route::put('/types/{type}/toggle', [TypeAdminController::class, 'toggle'])->name('admin.type.toggle');
 
     // faq
     Route::get('/faqs', [FaqAdminController::class, 'index'])->name('admin.faq.index');
-    Route::post('/faq', [FaqAdminController::class, 'store'])->name('admin.faq.create');
-    Route::patch('/faq', [FaqAdminController::class, 'update'])->name('admin.faq.update');
-    Route::delete('/faq', [FaqAdminController::class, 'destroy'])->name('admin.faq.destroy');
+    Route::post('/faq/create', [FaqAdminController::class, 'store'])->name('admin.faq.create');
+    Route::patch('/faq/update/{id}', [FaqAdminController::class, 'update'])->name('admin.faq.update');
+    Route::delete('/faq/delete/{id}', [FaqAdminController::class, 'destroy'])->name('admin.faq.destroy');
     Route::put('/faqs/{faq}/toggle', [FaqAdminController::class, 'toggle'])->name('admin.faq.toggle');
+    Route::post('/faqs/order', [FaqAdminController::class, 'updateOrder'])->name('faqs.updateOrder');
 
     // contact
     Route::get('/contacts', [ContactAdminController::class, 'index'])->name('admin.contact.index');
-    Route::post('/contact', [ContactAdminController::class, 'store'])->name('admin.contact.create');
-    Route::patch('/contact', [ContactAdminController::class, 'update'])->name('admin.contact.update');
-    Route::delete('/contact', [ContactAdminController::class, 'destroy'])->name('admin.contact.destroy');
+    Route::post('/contact/create', [ContactAdminController::class, 'store'])->name('admin.contact.create');
+    Route::patch('/contact/update/{id}', [ContactAdminController::class, 'update'])->name('admin.contact.update');
+    Route::delete('/contact/delete/{id}', [ContactAdminController::class, 'destroy'])->name('admin.contact.destroy');
 });
 
 require __DIR__.'/auth.php';

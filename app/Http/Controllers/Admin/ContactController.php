@@ -77,7 +77,7 @@ class ContactController extends Controller
     public function destroy(string $id)
     {
         //
-        $contact = Contact::find($id);
+        $contact = Contact::findOrFail($id);
         $contact->delete();
 
         return redirect()->back()->with('success', 'Contact deleted successfully.');

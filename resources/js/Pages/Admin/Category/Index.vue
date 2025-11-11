@@ -76,7 +76,7 @@ const openDeleteModal = (id) => {
 
 // delete method
 const deleteCategory = () => {
-    router.delete('/admin/category/delete' + idDeleteCategory.value);
+    router.delete('/admin/category/delete/' + idDeleteCategory.value);
     closeModal();
 
     Swal.fire({

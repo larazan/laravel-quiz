@@ -82,4 +82,16 @@ class FaqController extends Controller
 
         return back()->with('success', 'Faq status updated successfully!');
     }
+
+    public function updateOrder(Request $request)
+    {
+        $order = $request->input('order');
+
+        foreach ($order as $index => $id) {
+            Faq::where('id', $id)->update(['order_position' => $index + 1]);
+        }
+
+        // return back()->with('success', 'FAQ order updated successfully!');
+        return response()->json(['success' => true]);
+    }
 }

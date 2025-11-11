@@ -69,7 +69,7 @@ const openDeleteModal = (id) => {
 
 // delete method
 const deleteType = () => {
-    router.delete('/admin/type/delete' + idDeleteType.value);
+    router.delete('/admin/type/delete/' + idDeleteType.value);
     closeModal();
 
     Swal.fire({

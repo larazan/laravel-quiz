@@ -5,11 +5,14 @@ import Pagination from '../Components/Pagination.vue';
 import { limitWords } from '@/Utils/text.js'
 import { ref, reactive, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
+import draggable from 'vuedraggable';
 
 const props = defineProps({
     faqs: Object,
     search: Object
 });
+
+const faqs = ref([...props.faqs.data])
 
 const formFaq = reactive({
     question: null,
@@ -68,7 +71,7 @@ const openDeleteModal = (id) => {
 
 // delete method
 const deleteFaq = () => {
-    router.delete('/admin/faq/delete' + idDeleteFaq.value);
+    router.delete('/admin/faq/delete/' + idDeleteFaq.value);
     closeModal();
 
     Swal.fire({
@@ -89,12 +92,33 @@ watch(search, (value) => {
 
 //  pagination
 const pageTo = (url) => {
-    router.get(url, search.value ? { q:search.value }: '', { preserveState: true });
+    router.get(url, search.value ? { q: search.value } : '', { preserveState: true });
+}
+
+const onDragEnd = async () => {
+    try {
+        await axios.post(route('faqs.updateOrder'), {
+            order: faqs.value.map(f => f.id),
+        })
+        console.log('Order updated!')
+    } catch (error) {
+        console.error('Failed to update order', error)
+    }
 }
 </script>
 
-<template>
 
+<style scoped>
+.drag-handle {
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+</style>
+
+<template>
     <AdminLayout>
         <div
             class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
@@ -233,6 +257,7 @@ const pageTo = (url) => {
                                             <label for="checkbox-all" class="sr-only">checkbox</label>
                                         </div>
                                     </th>
+                                    <th></th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Question
@@ -252,57 +277,66 @@ const pageTo = (url) => {
                                     </th>
                                 </tr>
                             </thead>
+
+                            <!-- keep your tbody classes -->
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                                <!-- wrap your tr’s inside draggable -->
+                                <draggable v-model="faqs" item-key="id" tag="template" handle=".drag-handle"
+                                    :animation="200" @end="onDragEnd">
+                                    <template #item="{ element }">
+                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <td class="w-4 p-4">
+                                                <div class="flex items-center">
+                                                    <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
+                                                        class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
+                                                    <label for="checkbox-1" class="sr-only">checkbox</label>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-2 text-center cursor-grab drag-handle">☰</td>
+                                            <td
+                                                class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+                                                {{ element.question }}</td>
+                                            <td
+                                                class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ limitWords(element.answer, 10) }}</td>
+                                            <td
+                                                class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                                                <div class="flex items-center">
+                                                    <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
+                                                    Active
+                                                </div>
+                                            </td>
+                                            <td class="p-4 space-x-2 whitespace-nowrap">
+                                                <button @click="openEditModal(element)" type="button"
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z">
+                                                        </path>
+                                                        <path fill-rule="evenodd"
+                                                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Edit
+                                                </button>
+                                                <button @click="openDeleteModal(element.id)" type="button"
+                                                    
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
 
-                                <tr v-for="faq in props.faqs.data" :key="faq.id"
-                                    class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <td class="w-4 p-4">
-                                        <div class="flex items-center">
-                                            <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
-                                                class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-1" class="sr-only">checkbox</label>
-                                        </div>
-                                    </td>
 
-                                    <td
-                                        class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
-                                        {{ faq.question }}</td>
-                                    <td
-                                        class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {{ limitWords(faq.answer, 10) }}</td>
-                                    <td
-                                        class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                                        <div class="flex items-center">
-                                            <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div> Active
-                                        </div>
-                                    </td>
-                                    <td class="p-4 space-x-2 whitespace-nowrap">
-                                        <button @click="openEditModal(faq)" type="button"
-                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z">
-                                                </path>
-                                                <path fill-rule="evenodd"
-                                                    d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            Edit
-                                        </button>
-                                        <button @click="openDeleteModal(faq.id)" type="button"
-                                            data-modal-target="delete-faq-modal" data-modal-toggle="delete-faq-modal"
-                                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
+                                    </template>
+                                </draggable>
 
                             </tbody>
                         </table>
@@ -449,7 +483,7 @@ const pageTo = (url) => {
                         </h3>
                         <button @click="closeModal" type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                            data-modal-toggle="add-faq-modal">
+                            >
                             <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -507,7 +541,7 @@ const pageTo = (url) => {
                         <div class="flex justify-end p-2">
                             <button @click="closeModal()" type="button"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                                data-modal-hide="delete-faq-modal">
+                                >
                                 <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd"
