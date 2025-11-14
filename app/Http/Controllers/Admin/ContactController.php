@@ -63,7 +63,7 @@ class ContactController extends Controller
             'message' => 'required',
         ]);
 
-        $contact = Contact::find($id);
+        $contact = Contact::findOrFail($id);
 
         $contact->name = $request->name;
         $contact->email = $request->email;

@@ -22,9 +22,11 @@ return new class extends Migration
             $table->string('locale', 5)->default('en');
             $table->bigInteger('view_count')->nullable();
             $table->text('article_tags')->nullable();
-            $table->string('status',10);
-            $table->string('original')->nullable();
+            $table->boolean('is_active')->default(false);
+            $table->string('image')->nullable();
             $table->boolean('is_highlight')->default(false);
+            $table->datetime('published_at');
+            $table->boolean('published')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

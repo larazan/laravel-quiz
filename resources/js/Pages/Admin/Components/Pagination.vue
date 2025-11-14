@@ -1,13 +1,30 @@
 <script setup>
+import { router } from '@inertiajs/vue3'
+
 const props = defineProps({
   data: {
     type: Object,
     required: true,
   },
+  search: {
+    type: String,
+    default: '',
+  },
 })
 
+// emit optional event if parent needs to know page changes
+const emit = defineEmits(['page-change'])
+
 const pageTo = (url) => {
-  router.get(url);
+  if (!url) return
+
+  router.get(
+    url,
+    props.search ? { q: props.search } : {},
+    { preserveState: true, preserveScroll: true }
+  )
+
+  emit('page-change', url)
 }
 </script>
 
@@ -42,8 +59,9 @@ const pageTo = (url) => {
 
         <li v-for="(item, index) in props.data.links" :key="index">
           <a href="#" @click="pageTo(item.url)"
-            :class="{ 'bg-primary-400 text-white hover:text-white hover:cursor-text hover:bg-primary-400': item.active }"
-            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            :disabled="!item.url"
+            :class="{ '!bg-primary-400 text-white hover:text-white hover:cursor-text hover:bg-primary-400': item.active }"
+            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-primary-400 hover:text-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             v-html="item.label"></a>
         </li>
 
@@ -55,6 +73,7 @@ const pageTo = (url) => {
 
         <li v-for="(item, index) in props.data.links" :key="index">
           <a href="#" @click="pageTo(item.url)"
+            :disabled="!item.url"
             :class="{ 'bg-primary-400 text-white hover:text-white hover:cursor-text hover:bg-primary-400': item.active }"
             class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             v-html="item.label"></a>
@@ -87,3 +106,5 @@ const pageTo = (url) => {
     </div>
   </div>
 </template>
+
+<!-- <Pagination :data="users" :search="search" @page-change="(url) => console.log('Page changed:', url)" /> -->

@@ -55,7 +55,7 @@ class FaqController extends Controller
             'answer' => 'required',
         ]);
 
-        $faq = Faq::find($id);
+        $faq = Faq::findOrFail($id);
 
         $faq->question = $request->question;
         $faq->answer = $request->answer;
@@ -67,7 +67,7 @@ class FaqController extends Controller
     public function destroy(string $id)
     {
         //
-        $faq = Faq::find($id);
+        $faq = Faq::findOrFail($id);
         $faq->delete();
         return redirect()->back()->with('success', 'Faq deleted successfully.');
     }

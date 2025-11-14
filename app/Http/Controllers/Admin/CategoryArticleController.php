@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
+use App\Models\CategoryArticle as Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class CategoryController extends Controller
+class CategoryArticleController extends Controller
 {
     //
     public function index(Request $request)
@@ -40,10 +40,12 @@ class CategoryController extends Controller
 
         $name = $request->firstName;
         $parentId = $request->parentId;
+        $status = $request->status;
 
         Category::create([
             'name' => $name,
             'parent_id' => $parentId,
+            'status' => $status,
         ]);
 
         return redirect()->route('admin.category.index')->with('success', 'Category created successfully.');
@@ -60,6 +62,7 @@ class CategoryController extends Controller
 
         $category->name = $request->name;
         $category->parentId = $request->parent_id;
+        $category->status = $request->status;
 
         $category->update();
         return redirect()->route('admin.category.index')->with('success', 'Category updated successfully.');
@@ -71,16 +74,5 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->delete();
         return redirect()->back()->with('success', 'Category deleted successfully.');
-    }
-    
-    public function toggle(Category $category, Request $request)
-    {
-        $request->validate([
-            'is_active' => 'required|boolean',
-        ]);
-
-        $category->update(['is_active' => $request->is_active]);
-
-        return back()->with('success', 'Category status updated successfully!');
     }
 }

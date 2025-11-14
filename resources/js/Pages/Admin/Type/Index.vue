@@ -4,7 +4,8 @@ import Modal from '@/Components/Modal.vue';
 import Pagination from '../Components/Pagination.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref, reactive, watch } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, Head } from '@inertiajs/vue3';
+import ConfirmModal from '../Components/ConfirmModal.vue';
 
 const props = defineProps({
     types: Object,
@@ -97,6 +98,9 @@ const pageTo = (url) => {
 <template>
 
     <AdminLayout>
+        <Head>
+            <title>Types</title>
+        </Head>
         <div
             class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
             <div class="w-full mb-1">
@@ -292,7 +296,6 @@ const pageTo = (url) => {
                                             Edit
                                         </button>
                                         <button @click="openDeleteModal(type.id)" type="button"
-                                            data-modal-target="delete-type-modal" data-modal-toggle="delete-type-modal"
                                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -312,70 +315,9 @@ const pageTo = (url) => {
             </div>
         </div>
 
-        <!--  -->
-        <div
-            class="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between dark:bg-gray-800 dark:border-gray-700">
-            <div class="flex items-center mb-4 sm:mb-0">
-                <a href="#"
-                    class="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                </a>
-                <a href="#"
-                    class="inline-flex justify-center p-1 mr-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                </a>
-                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span
-                        class="font-semibold text-gray-900 dark:text-white">1-{{ props.types.per_page }}</span> of <span
-                        class="font-semibold text-gray-900 dark:text-white">{{ props.types.total }}</span></span>
-            </div>
-            <!-- pagi -->
-            <nav aria-label="Page navigation example" v-if="props.types.per_page">
-                <ul class="flex items-center -space-x-px h-10 text-base">
+        <Pagination :data="props.types" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
 
-                    <li v-for="(item, index) in props.types.links" :key="index">
-                        <a href="#" @click="pageTo(item.url)"
-                            :class="{ 'bg-primary-400 text-white hover:text-white hover:cursor-text hover:bg-primary-400': item.active }"
-                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                            v-html="item.label"></a>
-                    </li>
-
-
-                </ul>
-            </nav>
-            <!--  -->
-            <div class="flex2 hidden items-center space-x-3">
-                <a href="#"
-                    class="inline-flex items-center justify-center flex-1 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    Previous
-                </a>
-                <a href="#"
-                    class="inline-flex items-center justify-center flex-1 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    Next
-                    <svg class="w-5 h-5 ml-1 -mr-1" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                </a>
-            </div>
-        </div>
-
-        <!--  -->
+        
 
         <!-- Edit Type Modal -->
         <Modal :show="showEditModal" maxWidth="xl">
@@ -440,7 +382,7 @@ const pageTo = (url) => {
                         </h3>
                         <button @click="closeModal" type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                            data-modal-toggle="add-type-modal">
+                        >
                             <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -480,50 +422,12 @@ const pageTo = (url) => {
         </Modal>
 
         <!-- Delete Type Modal -->
-        <Modal :show="showDeleteModal" closeable="" maxWidth="md">
-            <div class="">
-                <div class="relative w-full h-full ">
-                    <!-- Modal content -->
-                    <div class="relative bg-white  shadow dark:bg-gray-800">
-                        <!-- Modal header -->
-                        <div class="flex justify-end p-2">
-                            <button @click="closeModal()" type="button"
-                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                                data-modal-hide="delete-type-modal">
-                                <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-6 pt-0 text-center justify-center">
-                            <div class="flex mx-auto w-20 h-20 justify-center ">
-                                <!-- <svg class="size-12 text-red-600" fill="none" stroke="currentColor" view-box="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> -->
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-20 text-red-600">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                                </svg>
-
-                            </div>
-                            <h3 class="mt-5 mb-6 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to
-                                delete this type?</h3>
-                            <button @click="deleteType()" type="button"
-                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2 dark:focus:ring-red-800">
-                                Yes, I'm sure
-                            </button>
-                            <button @click="closeModal()" type="button"
-                                class="justify-center text-gray-500 items-center bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">
-                                No, cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Modal>
+        <ConfirmModal 
+            :show="showDeleteModal"
+            message="Are you sure you want to delete this type?"
+            @confirm="deleteType"
+            @close="closeModal"
+        />
 
     </AdminLayout>
 </template>

@@ -1,3 +1,18 @@
+<script setup>
+import { usePage, Link } from "@inertiajs/vue3";
+import { computed, ref } from "vue";
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+
+const page = usePage();
+const user = computed(() => page.props.auth.user);
+
+// initialize components based on data attribute selectors
+onMounted(() => {
+    initFlowbite();
+})
+</script>
+
 <template>
     <nav class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
@@ -224,10 +239,10 @@
             <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-2">
               <div class="px-4 py-3" role="none">
                 <p class="text-sm text-gray-900 dark:text-white" role="none">
-                  Neil Sims
+                  <span>{{ user.first_name }} {{ user.last_name }}</span>
                 </p>
                 <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                  neil.sims@flowbite.com
+                  {{ user.email }}
                 </p>
               </div>
               <ul class="py-1" role="none">
@@ -241,7 +256,13 @@
                   <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</a>
                 </li>
                 <li>
-                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                  <Link
+                            :href="route('admin.logout')"
+                            method="post"
+                            as="button"
+                   class="w-full text-left block cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                   Sign out
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -252,12 +273,3 @@
 </nav>
 </template>
 
-<script setup>
-import { onMounted } from 'vue'
-import { initFlowbite } from 'flowbite'
-
-// initialize components based on data attribute selectors
-onMounted(() => {
-    initFlowbite();
-})
-</script>

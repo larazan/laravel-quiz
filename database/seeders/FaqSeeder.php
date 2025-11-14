@@ -34,7 +34,7 @@ class FaqSeeder extends Seeder
                 'question' => 'Can I submit my own facts to The Million Facts?',
                 'answer' => 'Yes! We encourage our community to contribute. If you have an interesting or random fact, please submit it through our submission form on the website.',
                 'order_position' => 3,
-                'status' => 'inactive',
+                'is_active' => true,
                 'created_at' => Carbon::now(),
             ],
             [

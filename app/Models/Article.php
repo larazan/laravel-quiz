@@ -25,22 +25,12 @@ class Article extends Model
         'body',
         'slug',
         'rand_id',
-        'hero_image',
-        'is_pinned',
-        'tweet_id',
         'published_at',
         'published',
-        'shared_at',
-        'status',
+        'is_active',
         'is_highlight',
-        'original_url',
         'article_tags',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
-        'original',
-        'small',
-        'medium',
+        'image',
         'view_count',
     ];
 
@@ -61,14 +51,14 @@ class Article extends Model
      * {@inheritdoc}
      */
     protected $casts = [
-        'shared_at' => 'datetime',
+        
     ];
 
     /**
      * {@inheritdoc}
      */
     protected $with = [
-        'authorRelation',
+        // 'authorRelation',
         // 'likesRelation',
         // 'tagsRelation',
     ];

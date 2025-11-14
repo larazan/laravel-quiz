@@ -58,7 +58,7 @@ class TypeController extends Controller
             'name' => 'required',
         ]);
 
-        $type = Type::find($id);
+        $type = Type::findOrFail($id);
 
         $type->name = $request->name;
 
@@ -72,7 +72,7 @@ class TypeController extends Controller
     public function destroy(string $id)
     {
         //
-        $type = Type::find($id);
+        $type = Type::findOrFail($id);
         $type->delete();
         return redirect()->back()->with('success', 'Type deleted successfully.');
     }

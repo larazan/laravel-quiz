@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('difficulty', ['easy','medium','hard'])->default('easy');
             $table->unsignedInteger('time_limit_seconds')->nullable(); // null = untimed
             $table->enum('display_mode', ['all', 'one_by_one'])->default('all');
-            $table->boolean('is_published')->default(false);
+            $table->boolean('is_published')->default(true);
             $table->boolean('is_approved')->default(false);
             $table->boolean('is_private')->default(false);
             $table->unsignedBigInteger('times_played')->default(0); // Counter for times played
