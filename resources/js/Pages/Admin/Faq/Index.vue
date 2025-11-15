@@ -19,6 +19,11 @@ const formFaq = reactive({
     answer: null,
 });
 
+const resetForm = () => {
+    formFaq.question = null;
+    formFaq.answer = null;
+}
+
 const idFaq = ref('');
 const idDeleteFaq = ref('');
 
@@ -43,22 +48,22 @@ const openEditModal = (faq) => {
 // update method
 const updateFaq = () => {
     router.put('/admin/faq/update/' + idFaq.value, formFaq);
-    formFaq.question = null;
-    formFaq.answer = null;
+    resetForm();
 
     closeModal();
 }
 
 // open add modal
 const openAddModal = () => {
+    resetForm();
+
     showCreateModal.value = true;
 }
 
 // add method
 const addFaq = () => {
     router.post('/admin/faq/create', formFaq);
-    formFaq.question = null;
-    formFaq.answer = null;
+    resetForm();
 
     closeModal();
 }

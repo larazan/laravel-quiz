@@ -16,6 +16,10 @@ const formType = reactive({
     name: null,
 });
 
+const resetForm = () => {
+    formType.name = null;
+}
+
 const idType = ref('');
 const idDeleteType = ref('');
 
@@ -40,24 +44,22 @@ const openEditModal = (type) => {
 // update method
 const updateType = () => {
     router.put('/admin/type/update/' + idType.value, formType);
-    formType.name = null;
+    resetForm();
 
     closeModal();
 }
 
 // open add modal
 const openAddModal = () => {
+    resetForm();
+
     showCreateModal.value = true;
 }
 
 // add method
 const addType = () => {
     router.post('/admin/type/create', formType);
-    formType.firstName = null;
-    formType.lastName = null;
-    formType.typeName = null;
-    formType.email = null;
-    formType.role = null;
+    resetForm();
 
     closeModal();
 }

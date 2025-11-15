@@ -6,6 +6,7 @@ import ToggleSwitch from '../Components/ToggleSwitch.vue';
 import { ref, reactive, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
+import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
     categories: Object,
@@ -15,8 +16,13 @@ const props = defineProps({
 
 const formCategory = reactive({
     name: null,
-    parentId: null,
+    parentId: "",
 });
+
+const resetForm = () => {
+    formCategory.name = null;
+    formCategory.parentId = "";
+}
 
 const idCategory = ref('');
 const idDeleteCategory = ref('');
@@ -29,35 +35,36 @@ const closeModal = () => {
     if (showEditModal.value) showEditModal.value = false;
     if (showCreateModal.value) showCreateModal.value = false;
     if (showDeleteModal.value) showDeleteModal.value = false;
+    
 }
 
 // open edit modal
 const openEditModal = (category) => {
-    showEditModal.value = true;
     formCategory.name = category.name;
     formCategory.parentId = category.parent_id;
     idCategory.value = category.id;
+    showEditModal.value = true;
 }
 
 // update method
 const updateCategory = () => {
     router.put('/admin/category/update/' + idCategory.value, formCategory);
-    formCategory.name = null;
-    formCategory.parentId = null;
+    resetForm();
 
     closeModal();
 }
 
 // open add modal
 const openAddModal = () => {
+    resetForm();
+
     showCreateModal.value = true;
 }
 
 // add method
 const addCategory = () => {
     router.post('/admin/category/create', formCategory);
-    formCategory.name = null;
-    formCategory.parentId = null;
+    resetForm();
 
     closeModal();
 
@@ -286,7 +293,7 @@ const pageTo = (url) => {
             </div>
         </div>
 
-        <Pagination :data="props.categories" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
+            <PaginationMod :meta="props.categories" :query="{ search: searchValue }" :limit="5" />
 
       
         <!-- Edit Category Modal -->
@@ -328,7 +335,7 @@ const pageTo = (url) => {
                                         Parent Category
                                     </label>
                                     <select v-model="formCategory.parentId" id="category-create" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option selected="">Select category</option>
+                                        <option disabled value="">Select category</option>
                                         <option v-for="option in props.parentOption" :key="option.id" :value="option.id">{{ option.name }}</option> 
                                     </select>
                                 </div>
@@ -354,7 +361,7 @@ const pageTo = (url) => {
 
 
         <!-- Add Category Modal -->
-        <Modal :show="showCreateModal" maxWidth="xl">
+        <Modal :show="showCreateModal"  maxWidth="xl" >
             <div class="">
                 <!-- Modal content -->
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
@@ -393,7 +400,7 @@ const pageTo = (url) => {
                                         Parent Category
                                     </label>
                                     <select v-model="formCategory.parentId" id="category-create" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option selected="">Select category</option>
+                                        <option disabled value="">Select category</option>
                                         <option v-for="option in props.parentOption" :key="option.id" :value="option.id">{{ option.name }}</option> 
                                     </select>
                                 </div>

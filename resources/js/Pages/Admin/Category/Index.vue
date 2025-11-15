@@ -13,9 +13,14 @@ const props = defineProps({
     search: Object
 });
 
+const resetForm = () => {
+    formCategory.name = null;
+    formCategory.parentId = "";
+}
+
 const formCategory = reactive({
     name: null,
-    parentId: null,
+    parentId: "",
 });
 
 const idCategory = ref('');
@@ -42,22 +47,22 @@ const openEditModal = (category) => {
 // update method
 const updateCategory = () => {
     router.put('/admin/category/update/' + idCategory.value, formCategory);
-    formCategory.name = null;
-    formCategory.parentId = null;
+    resetForm();
 
     closeModal();
 }
 
 // open add modal
 const openAddModal = () => {
+    resetForm();
+
     showCreateModal.value = true;
 }
 
 // add method
 const addCategory = () => {
     router.post('/admin/category/create', formCategory);
-    formCategory.name = null;
-    formCategory.parentId = null;
+    resetForm();
 
     closeModal();
 

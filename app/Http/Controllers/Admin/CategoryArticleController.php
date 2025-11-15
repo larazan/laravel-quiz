@@ -24,7 +24,7 @@ class CategoryArticleController extends Controller
 
         $catParent = Category::whereNull('parent_id')->get();
 
-        return Inertia::render('Admin/Category/Index', [
+        return Inertia::render('Admin/CategoryArticle/Index', [
             'menuTasks' => 'active',
             'categories' => $categories,
             'parentOption' => $catParent,

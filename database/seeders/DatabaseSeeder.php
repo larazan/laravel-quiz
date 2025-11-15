@@ -33,8 +33,8 @@ class DatabaseSeeder extends Seeder
             // FaqSeeder::class,
             // SegmentSeeder::class,
             // SettingSeeder::class,
-            // RoleSeeder::class,
-            CategoryArticleSeeder::class,
+            RoleSeeder::class,
+            // CategoryArticleSeeder::class,
         ]);
     }
 }

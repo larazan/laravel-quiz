@@ -4,7 +4,7 @@ import Modal from '@/Components/Modal.vue';
 import Pagination from '../Components/Pagination.vue';
 import { limitWords } from '@/Utils/text.js'
 import { ref, reactive, watch } from 'vue';
-import { router, Head, Link  } from '@inertiajs/vue3';
+import { router, Head, Link } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
 import PaginationMod from '../Components/PaginationMod.vue';
 
@@ -19,6 +19,13 @@ const formContact = reactive({
     subject: null,
     message: null,
 });
+
+const resetForm = () => {
+    formContact.name = null;
+    formContact.email = null;
+    formContact.subject = null;
+    formContact.message = null;
+}
 
 const idContact = ref('');
 const idDeleteContact = ref('');
@@ -47,26 +54,22 @@ const openEditModal = (contact) => {
 // update method
 const updateContact = () => {
     router.put('/admin/contact/update/' + idContact.value, formContact);
-    formContact.name = null;
-    formContact.email = null;
-    formContact.subject = null;
-    formContact.message = null;
+    resetForm();
 
     closeModal();
 }
 
 // open add modal
 const openAddModal = () => {
+    resetForm();
+
     showCreateModal.value = true;
 }
 
 // add method
 const addContact = () => {
     router.post('/admin/contact/create', formContact);
-    formContact.name = null;
-    formContact.email = null;
-    formContact.subject = null;
-    formContact.message = null;
+    resetForm();
 
     closeModal();
 }
@@ -118,6 +121,7 @@ const pageTo = (url) => {
 <template>
 
     <AdminLayout>
+
         <Head>
             <title>Contacts</title>
         </Head>
@@ -347,13 +351,8 @@ const pageTo = (url) => {
             </div>
         </div>
 
-        <Pagination :data="props.contacts" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
-       
-            <PaginationMod
-  :meta="props.contacts"
-  :query="{ search: searchValue }"
-  :limit="5"
-/>
+
+        <PaginationMod :meta="props.contacts" :query="{ search: searchValue }" :limit="5" />
 
         <!-- Edit Contact Modal -->
         <Modal :show="showEditModal" maxWidth="xl">
@@ -441,8 +440,7 @@ const pageTo = (url) => {
                             Add new contact
                         </h3>
                         <button @click="closeModal" type="button"
-                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
-                        >
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white">
                             <svg class="w-5 h-5" fill="currentColor" view-box="0 0 20 20"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -506,13 +504,9 @@ const pageTo = (url) => {
         </Modal>
 
         <!-- Delete Contact Modal -->
-        <ConfirmModal 
-            :show="showDeleteModal"
-            message="Are you sure you want to delete this contact?"
-            @confirm="deleteContact"
-            @close="closeModal"
-        />
+        <ConfirmModal :show="showDeleteModal" message="Are you sure you want to delete this contact?"
+            @confirm="deleteContact" @close="closeModal" />
 
-        
+
     </AdminLayout>
 </template>

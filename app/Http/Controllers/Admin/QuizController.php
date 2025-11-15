@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Quiz;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Type;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -13,9 +16,14 @@ class QuizController extends Controller
     //
     public function index(Request $request)
     {
-        $quizzes = Quiz::when($request->q, function($query, $q){
-            $query->where('title', 'like', '%'.$q.'%');
+        $quizzes = Quiz::whereHas('user', function (Builder $query) {
+            $query->where('role', '!=', 'suspended');
         })
+            ->with('user', 'category', 'type')
+            ->withCount('questions')
+            ->when($request->q, function($query, $q){
+                    $query->where('title', 'like', '%'.$q.'%');
+                })
         // ->when(request('sort'), function ($q) {
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
@@ -23,9 +31,14 @@ class QuizController extends Controller
         ->paginate(5)
         ->withQueryString();
 
+        $categories = Category::OrderBy('name', 'asc')->get();
+        $types = Type::OrderBy('name', 'asc')->get();
+
         return Inertia::render('Admin/Quiz/Index', [
             'menuTasks' => 'active',
             'quizzes' => $quizzes,
+            'categories' => $categories,
+            'types' => $types,
             'search' => $request->only('q'),
         ]);
     }

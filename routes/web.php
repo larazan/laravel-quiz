@@ -91,7 +91,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/quiz/create', [QuizAdminController::class, 'store'])->name('admin.quiz.create');
     Route::patch('/quiz/update/{id}', [QuizAdminController::class, 'update'])->name('admin.quiz.update');
     Route::delete('/quiz/delete/{id}', [QuizAdminController::class, 'destroy'])->name('admin.quiz.destroy');
-    Route::put('/quizzes/{type}/toggle', [QuizAdminController::class, 'toggle'])->name('admin.quiz.toggle');
+    Route::put('/quizzes/{quiz}/approve', [QuizAdminController::class, 'toggleApprove'])->name('admin.quiz.approve');
+    Route::put('/quizzes/{quiz}/publish', [QuizAdminController::class, 'togglePublish'])->name('admin.quiz.publish');
+    Route::put('/quizzes/{quiz}/private', [QuizAdminController::class, 'togglePrivate'])->name('admin.quiz.private');
 
     // faq
     Route::get('/faqs', [FaqAdminController::class, 'index'])->name('admin.faq.index');

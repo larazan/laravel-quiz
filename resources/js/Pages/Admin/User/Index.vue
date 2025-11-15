@@ -19,6 +19,14 @@ const formUser = reactive({
     role: null
 });
 
+const resetForm = () => {
+    formUser.firstName = null;
+    formUser.lastName = null;
+    formUser.userName = null;
+    formUser.email = null;
+    formUser.role = null;
+}
+
 const idUser = ref('');
 const idDeleteUser = ref('');
 
@@ -46,28 +54,22 @@ const openEditModal = (user) => {
 // update method
 const updateUser = () => {
     router.put('/admin/user/update/' + idUser.value, formUser);
-    formUser.firstName = null;
-    formUser.lastName = null;
-    formUser.userName = null;
-    formUser.email = null;
-    formUser.role = null;
+    resetForm();
 
     closeModal();
 }
 
 // open add modal
 const openAddModal = () => {
+    resetForm();
+
     showCreateModal.value = true;
 }
 
 // add method
 const addUser = () => {
     router.post('/admin/user/create', formUser);
-    formUser.firstName = null;
-    formUser.lastName = null;
-    formUser.userName = null;
-    formUser.email = null;
-    formUser.role = null;
+    resetForm();
 
     closeModal();
 }
