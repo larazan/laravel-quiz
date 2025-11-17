@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(Quiz::class);
     }
 
+    public function questions()
+    {
+        return $this->hasMany(Option::class);
+    }
+
     public function attempts()
     {
         return $this->hasMany(Attempt::class);

@@ -12,6 +12,8 @@ class CategoryController extends Controller
     //
     public function index(Request $request)
     {
+        $page = 10;
+        $sort = 'asc';
         $categories = Category::when($request->q, function($query, $q){
             $query->where('name', 'like', '%'.$q.'%');
         })
@@ -19,13 +21,13 @@ class CategoryController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+         ->paginate($page)
         ->withQueryString();
 
         $catParent = Category::whereNull('parent_id')->get();
 
         return Inertia::render('Admin/Category/Index', [
-            'menuTasks' => 'active',
+           'page' => $page,
             'categories' => $categories,
             'parentOption' => $catParent,
             'search' => $request->only('q'),

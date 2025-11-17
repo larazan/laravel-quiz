@@ -7,12 +7,10 @@ import { limitWords } from '@/Utils/text.js'
 import { ref, reactive, watch } from 'vue';
 import { router, Head, useForm } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
-import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
     page: Number,
-    quizzes: Object,
-    categories: Object,
+    question: Object,
     types: Object,
     search: Object
 });
@@ -23,16 +21,12 @@ const difficulties = [
   { label: 'Hard', value: 'hard' },
 ];
 
-const modes = [
-  { label: 'All', value: 'all' },
-  { label: 'One by One', value: 'one_by_one' },
-];
 
 const form = useForm({
-    title: props.quizzes.title,
+    title: props.question.title,
 })
 
-const formQuiz = reactive({
+const formQuestion = reactive({
     categoryId: "",
     typeId: "",
     title: null,
@@ -44,17 +38,17 @@ const formQuiz = reactive({
 });
 
 const resetForm = () => {
-    formQuiz.categoryId = "";
-    formQuiz.typeId = "";
-    formQuiz.title = null;
-    formQuiz.description = null;
-    formQuiz.difficulty = null;
-    formQuiz.timeLimitSeconds = null;
-    formQuiz.displayMode = null;
+    formQuestion.categoryId = "";
+    formQuestion.typeId = "";
+    formQuestion.title = null;
+    formQuestion.description = null;
+    formQuestion.difficulty = null;
+    formQuestion.timeLimitSeconds = null;
+    formQuestion.displayMode = null;
 }
 
-const idQuiz = ref('');
-const idDeleteQuiz = ref('');
+const idQuestion = ref('');
+const idDeleteQuestion = ref('');
 
 const showEditModal = ref(false);
 const showCreateModal = ref(false);
@@ -67,22 +61,22 @@ const closeModal = () => {
 }
 
 // open edit modal
-const openEditModal = (quiz) => {
-    formQuiz.categoryId = quiz.category_id;
-    formQuiz.typeId = quiz.type_id;
-    formQuiz.title = quiz.title;
-    formQuiz.description = quiz.description;
-    formQuiz.difficulty = quiz.difficulty;
-    formQuiz.timeLimitSeconds = quiz.time_limit_seconds;
-    formQuiz.displayMode = quiz.display_mode;
-    idQuiz.value = quiz.id;
+const openEditModal = (question) => {
+    formQuestion.categoryId = question.category_id;
+    formQuestion.typeId = question.type_id;
+    formQuestion.title = question.title;
+    formQuestion.description = question.description;
+    formQuestion.difficulty = question.difficulty;
+    formQuestion.timeLimitSeconds = question.time_limit_seconds;
+    formQuestion.displayMode = question.display_mode;
+    idQuestion.value = question.id;
     
     showEditModal.value = true;
 }
 
 // update method
-const updateQuiz = () => {
-    router.put('/admin/quiz/update/' + idQuiz.value, formQuiz);
+const updateQuestion = () => {
+    router.put('/admin/question/update/' + idQuestion.value, formQuestion);
     resetForm();
 
     closeModal();
@@ -96,8 +90,8 @@ const openAddModal = () => {
 }
 
 // add method
-const addQuiz = () => {
-    router.post('/admin/quiz/create', formQuiz);
+const addQuestion = () => {
+    router.post('/admin/question/create', formQuestion);
     resetForm();
 
     closeModal();
@@ -113,12 +107,12 @@ const addQuiz = () => {
 // open delete modal
 const openDeleteModal = (id) => {
     showDeleteModal.value = true;
-    idDeleteQuiz.value = id;
+    idDeleteQuestion.value = id;
 }
 
 // delete method
-const deleteQuiz = () => {
-    router.delete('/admin/quiz/delete/' + idDeleteQuiz.value);
+const deleteQuestion = () => {
+    router.delete('/admin/question/delete/' + idDeleteQuestion.value);
     closeModal();
 
     Swal.fire({
@@ -134,7 +128,7 @@ const deleteQuiz = () => {
 const search = ref(props.search ?? '');
 
 watch(search, (value) => {
-    router.get('/admin/quizzes', { q: value }, { preserveState: true, replace: true })
+    router.get('/admin/question', { q: value }, { preserveState: true, replace: true })
 });
 
 //  pagination
@@ -148,7 +142,7 @@ const pageTo = (url) => {
     <AdminLayout>
 
         <Head>
-            <title>Quizzes</title>
+            <title>Questionzes</title>
         </Head>
         <div
             class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
@@ -157,17 +151,17 @@ const pageTo = (url) => {
                     <!-- breadcrumb -->
 
                     <!-- end breadcrumb -->
-                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All quizzes</h1>
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All question</h1>
                 </div>
                 <div class="sm:flex">
                     <div
                         class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
                         <div class="lg:pr-3">
-                            <label for="quizzes-search" class="sr-only">Search</label>
+                            <label for="question-search" class="sr-only">Search</label>
                             <div class="relative mt-1 lg:w-64 xl:w-96">
-                                <input v-model="search" type="text" name="email" id="quizzes-search"
+                                <input v-model="search" type="text" name="email" id="question-search"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Search for quizzes">
+                                    placeholder="Search for question">
                             </div>
                         </div>
                         <div class="flex pl-0 mt-3 space-x-1 sm:pl-2 sm:mt-0">
@@ -218,7 +212,7 @@ const pageTo = (url) => {
                                     d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                                     clip-rule="evenodd"></path>
                             </svg>
-                            Add quiz
+                            Add question
                         </button>
                         <a href="#"
                             class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
@@ -250,17 +244,15 @@ const pageTo = (url) => {
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Title
-                                    </th>
-                                    <th scope="col"
-                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Category
-                                        <!-- Type -->
-                                        <!-- Difficulty -->
-                                    </th>
-                                    <th scope="col"
-                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Question
+                                        <!-- Quiz -->
+                                    </th>
+                                    
+                                    <th scope="col"
+                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        Type
+                                        <!-- Difficulty -->
+                                        <!-- Point -->
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -268,11 +260,11 @@ const pageTo = (url) => {
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Approved
+                                         Active
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Active
+                                        Private
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -282,7 +274,7 @@ const pageTo = (url) => {
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 
-                                <tr v-for="quiz in props.quizzes.data" :key="quiz.id"
+                                <tr v-for="question in props.question.data" :key="question.id"
                                     class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="w-4 p-4">
                                         <div class="flex items-center">
@@ -418,38 +410,35 @@ const pageTo = (url) => {
                                         <!-- <img class="w-10 h-10 rounded-full" src="https://flowbite-admin-dashboard.vercel.app/images/users/neil-sims.png" alt="Neil Sims avatar"> -->
                                         <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
                                             <div class="text-base font-semibold text-gray-900 dark:text-white">
-                                                {{ quiz.title }}
+                                                {{ question.question_text }}
                                             </div>
                                             <div class="text-xs font-normal text-gray-500 dark:text-gray-400">
-                                                {{ limitWords(quiz.description,5) }}</div>
+                                                {{ question.quiz.title }}</div>
                                         </div>
                                     </td>
+                                    
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-xs font-semibold text-gray-700 truncate xl:max-w-xs dark:text-gray-400">
-                                        <p>{{ quiz.category.name }}</p>
-                                        <p>Type: {{ quiz.type.name }}</p>
-                                        <p>Level: {{ quiz.difficulty }}</p>
+                                        <p>Type: {{ question.type.name }}</p>
+                                        <p>Level: {{ question.difficulty }}</p>
+                                        <p>Point: {{ question.points }}</p>
                                     </td>
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
-                                        {{ quiz.questions_count }}
-                                    </td>
-                                    <td
-                                        class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
-                                        {{ quiz.time_limit_seconds }}
+                                        {{ question.time_limit_seconds }}
                                     </td>
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                                        <ToggleSwitch v-model="quiz.is_approved"
-                                            :update-url="route('admin.quiz.approve', quiz.id)" label="" />
+                                        <ToggleSwitch v-model="question.is_active"
+                                            :update-url="route('admin.question.active', question.id)" label="" />
                                     </td>
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                                        <ToggleSwitch v-model="quiz.is_private"
-                                            :update-url="route('admin.quiz.private', quiz.id)" label="" />
+                                        <ToggleSwitch v-model="question.is_private"
+                                            :update-url="route('admin.question.private', question.id)" label="" />
                                     </td>
                                     <td class="p-4 space-x-2 whitespace-nowrap">
-                                        <button @click="openEditModal(quiz)" type="button"
+                                        <button @click="openEditModal(question)" type="button"
                                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -462,7 +451,7 @@ const pageTo = (url) => {
                                             </svg>
                                             Edit
                                         </button>
-                                        <button @click="openDeleteModal(quiz.id)" type="button"
+                                        <button @click="openDeleteModal(question.id)" type="button"
                                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -482,9 +471,10 @@ const pageTo = (url) => {
             </div>
         </div>
 
-            <PaginationMod :meta="props.quizzes" :query="{ search: searchValue }" :limit="props.page" />
+        <Pagination :data="props.question" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
 
-        <!-- Edit Quiz Modal -->
+
+        <!-- Edit Question Modal -->
         <Modal :show="showEditModal" maxWidth="xl">
             <div class="">
                 <!-- Modal content -->
@@ -492,7 +482,7 @@ const pageTo = (url) => {
                     <!-- Modal header -->
                     <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
                         <h3 class="text-xl font-semibold dark:text-white">
-                            Edit quiz
+                            Edit question
                         </h3>
                         <button @click="closeModal()" type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white">
@@ -505,7 +495,7 @@ const pageTo = (url) => {
                         </button>
                     </div>
                     <!-- Modal body -->
-                    <form @submit.prevent="updateQuiz">
+                    <form @submit.prevent="updateQuestion">
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
                                 
@@ -514,7 +504,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Category
                                     </label>
-                                    <select v-model="formQuiz.categoryId" id="category"
+                                    <select v-model="formQuestion.categoryId" id="category"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select category</option>
                                         <option v-for="category in props.categories" :key="category.id"
@@ -526,7 +516,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Type
                                     </label>
-                                    <select v-model="formQuiz.typeId" id="type"
+                                    <select v-model="formQuestion.typeId" id="type"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select type</option>
                                         <option v-for="type in props.types" :key="type.id"
@@ -538,7 +528,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Title
                                     </label>
-                                    <input type="text" v-model="formQuiz.title" id="title"
+                                    <input type="text" v-model="formQuestion.title" id="title"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="title" required>
                                 </div>
@@ -547,7 +537,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Description
                                     </label>
-                                    <textarea v-model="formQuiz.description" id="question" rows="4"
+                                    <textarea v-model="formQuestion.description" id="question" rows="4"
                                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Enter description here"></textarea>
                                 </div>
@@ -557,7 +547,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Difficulty
                                     </label>
-                                    <select v-model="formQuiz.difficulty" id="difficulty"
+                                    <select v-model="formQuestion.difficulty" id="difficulty"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select difficulty</option>
                                         <option v-for="d in difficulties" :key="d.value" :value="d.value">
@@ -570,7 +560,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Display Mode
                                     </label>
-                                    <select v-model="formQuiz.displayMode" id="display"
+                                    <select v-model="formQuestion.displayMode" id="display"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select display</option>
                                         <option v-for="d in modes" :key="d.value" :value="d.value">
@@ -583,7 +573,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Time
                                     </label>
-                                    <input type="number" v-model="formQuiz.timeLimitSeconds" id="time"
+                                    <input type="number" v-model="formQuestion.timeLimitSeconds" id="time"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="tags" required>
                                 </div>
@@ -614,7 +604,7 @@ const pageTo = (url) => {
         </Modal>
 
 
-        <!-- Add Quiz Modal -->
+        <!-- Add Question Modal -->
         <Modal :show="showCreateModal" maxWidth="xl">
             <div class="">
                 <!-- Modal content -->
@@ -622,7 +612,7 @@ const pageTo = (url) => {
                     <!-- Modal header -->
                     <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
                         <h3 class="text-xl font-semibold dark:text-white">
-                            Add new quiz
+                            Add new question
                         </h3>
                         <button @click="closeModal" type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white">
@@ -635,7 +625,7 @@ const pageTo = (url) => {
                         </button>
                     </div>
                     <!-- Modal body -->
-                    <form action="#" @submit.prevent="addQuiz">
+                    <form action="#" @submit.prevent="addQuestion">
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
                                 
@@ -644,7 +634,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Category
                                     </label>
-                                    <select v-model="formQuiz.categoryId" id="category"
+                                    <select v-model="formQuestion.categoryId" id="category"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select category</option>
                                         <option v-for="category in props.categories" :key="category.id"
@@ -656,7 +646,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Type
                                     </label>
-                                    <select v-model="formQuiz.typeId" id="type"
+                                    <select v-model="formQuestion.typeId" id="type"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select type</option>
                                         <option v-for="type in props.types" :key="type.id"
@@ -668,7 +658,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Title
                                     </label>
-                                    <input type="text" v-model="formQuiz.title" id="title"
+                                    <input type="text" v-model="formQuestion.title" id="title"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="title" required>
                                 </div>
@@ -677,7 +667,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Description
                                     </label>
-                                    <textarea v-model="formQuiz.description" id="question" rows="4"
+                                    <textarea v-model="formQuestion.description" id="question" rows="4"
                                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Enter description here"></textarea>
                                 </div>
@@ -687,7 +677,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Difficulty
                                     </label>
-                                    <select v-model="formQuiz.difficulty" id="difficulty"
+                                    <select v-model="formQuestion.difficulty" id="difficulty"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select difficulty</option>
                                         <option v-for="d in difficulties" :key="d.value" :value="d.value">
@@ -700,7 +690,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Display Mode
                                     </label>
-                                    <select v-model="formQuiz.displayMode" id="display"
+                                    <select v-model="formQuestion.displayMode" id="display"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select display</option>
                                         <option v-for="d in modes" :key="d.value" :value="d.value">
@@ -713,7 +703,7 @@ const pageTo = (url) => {
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Time
                                     </label>
-                                    <input type="number" v-model="formQuiz.timeLimitSeconds" id="time"
+                                    <input type="number" v-model="formQuestion.timeLimitSeconds" id="time"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         required>
                                 </div>
@@ -743,9 +733,9 @@ const pageTo = (url) => {
             </div>
         </Modal>
 
-        <!-- Delete Quiz Modal -->
+        <!-- Delete Question Modal -->
         <ConfirmModal :show="showDeleteModal" message="Are you sure you want to delete this contact?"
-            @confirm="deleteQuiz" @close="closeModal" />
+            @confirm="deleteQuestion" @close="closeModal" />
 
 
     </AdminLayout>

@@ -10,10 +10,13 @@ use App\Http\Controllers\Admin\CategoryArticleController;
 use App\Http\Controllers\Admin\ContactController as ContactAdminController;
 use App\Http\Controllers\Admin\FaqController as FaqAdminController;
 use App\Http\Controllers\Admin\QuizController as QuizAdminController;
+use App\Http\Controllers\Admin\QuestionController as QuestionAdminController;
 use App\Http\Controllers\Admin\ReportController as ReportAdminController;
 use App\Http\Controllers\Admin\SettingController as SettingAdminController;
 use App\Http\Controllers\Admin\TypeController as TypeAdminController;
 use App\Http\Controllers\Admin\UserController as UserAdminController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 
 // frontend
 use App\Http\Controllers\HomeController;
@@ -54,9 +57,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function ()
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+    // user
     Route::get('/users', [UserAdminController::class, 'index'])->name('admin.user.index');
     Route::patch('/user', [UserAdminController::class, 'update'])->name('admin.user.update');
     Route::delete('/user', [UserAdminController::class, 'destroy'])->name('admin.user.destroy');
+    Route::post('/users/{user}/sync-roles', [UserAdminController::class, 'syncRoles']);
+    Route::post('/users/{user}/sync-permissions', [UserAdminController::class, 'syncPermissions']);
+    
 
     // article
     Route::get('/articles', [ArticleAdminController::class, 'index'])->name('admin.article.index');
@@ -95,6 +102,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/quizzes/{quiz}/publish', [QuizAdminController::class, 'togglePublish'])->name('admin.quiz.publish');
     Route::put('/quizzes/{quiz}/private', [QuizAdminController::class, 'togglePrivate'])->name('admin.quiz.private');
 
+     // question
+     Route::get('/questions', [QuestionAdminController::class, 'index'])->name('admin.question.index');
+     Route::post('/question/create', [QuestionAdminController::class, 'store'])->name('admin.question.create');
+     Route::patch('/question/update/{id}', [QuestionAdminController::class, 'update'])->name('admin.question.update');
+     Route::delete('/question/delete/{id}', [QuestionAdminController::class, 'destroy'])->name('admin.question.destroy');
+     Route::put('/questions/{question}/active', [QuestionAdminController::class, 'toggleActive'])->name('admin.question.approve');
+     Route::put('/questions/{question}/private', [QuestionAdminController::class, 'togglePrivate'])->name('admin.question.private');
+
     // faq
     Route::get('/faqs', [FaqAdminController::class, 'index'])->name('admin.faq.index');
     Route::post('/faq/create', [FaqAdminController::class, 'store'])->name('admin.faq.create');
@@ -108,6 +123,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/contact/create', [ContactAdminController::class, 'store'])->name('admin.contact.create');
     Route::patch('/contact/update/{id}', [ContactAdminController::class, 'update'])->name('admin.contact.update');
     Route::delete('/contact/delete/{id}', [ContactAdminController::class, 'destroy'])->name('admin.contact.destroy');
+
+    // setting
+    Route::get('/settings', [SettingAdminController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingAdminController::class, 'update'])->name('settings.update');
+
+    // role & permission
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
 });
 
 require __DIR__.'/auth.php';

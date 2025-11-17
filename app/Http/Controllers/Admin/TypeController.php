@@ -13,6 +13,8 @@ class TypeController extends Controller
     public function index(Request $request)
     {
         //
+        $page = 10;
+        $sort = 'asc';
         $types = Type::when($request->q, function($query, $q){
             $query->where('name', 'like', '%'.$q.'%');
         })
@@ -20,11 +22,11 @@ class TypeController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+         ->paginate($page)
         ->withQueryString();
 
         return Inertia::render('Admin/Type/Index', [
-            'menuTasks' => 'active',
+           'page' => $page,
             'types' => $types,
             'search' => $request->only('q'),
         ]);

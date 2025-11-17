@@ -16,6 +16,8 @@ class QuizController extends Controller
     //
     public function index(Request $request)
     {
+        $page = 10;
+        $sort = 'asc';
         $quizzes = Quiz::whereHas('user', function (Builder $query) {
             $query->where('role', '!=', 'suspended');
         })
@@ -28,14 +30,14 @@ class QuizController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+         ->paginate($page)
         ->withQueryString();
 
         $categories = Category::OrderBy('name', 'asc')->get();
         $types = Type::OrderBy('name', 'asc')->get();
 
         return Inertia::render('Admin/Quiz/Index', [
-            'menuTasks' => 'active',
+           'page' => $page,
             'quizzes' => $quizzes,
             'categories' => $categories,
             'types' => $types,

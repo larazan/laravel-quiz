@@ -6,8 +6,10 @@ import ToggleSwitch from '../Components/ToggleSwitch.vue';
 import { ref, reactive, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
+import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
+    page: Number,
     categories: Object,
     parentOption: Object,
     search: Object
@@ -291,8 +293,7 @@ const pageTo = (url) => {
             </div>
         </div>
 
-        <Pagination :data="props.categories" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
-
+            <PaginationMod :meta="props.categories" :query="{ search: searchValue }" :limit="props.page" />
       
         <!-- Edit Category Modal -->
         <Modal :show="showEditModal" maxWidth="xl">

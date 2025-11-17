@@ -17,6 +17,8 @@ class ArticleController extends Controller
     //
     public function index(Request $request)
     {
+        $page = 10;
+        $sort = 'asc';
         $articles = Article::when($request->q, function($query, $q){
             $query->where('title', 'like', '%'.$q.'%');
         })
@@ -24,13 +26,13 @@ class ArticleController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+         ->paginate($page)
         ->withQueryString();
 
         $categories = CategoryArticle::OrderBy('name', 'asc')->get();
 
         return Inertia::render('Admin/Article/Index', [
-            'menuTasks' => 'active',
+           'page' => $page,
             'articles' => $articles,
             'categories' => $categories,
             'search' => $request->only('q'),

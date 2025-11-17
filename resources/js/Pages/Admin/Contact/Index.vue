@@ -9,6 +9,7 @@ import ConfirmModal from '../Components/ConfirmModal.vue';
 import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
+    page: Number,
     contacts: Object,
     search: Object
 });
@@ -352,7 +353,7 @@ const pageTo = (url) => {
         </div>
 
 
-        <PaginationMod :meta="props.contacts" :query="{ search: searchValue }" :limit="5" />
+        <PaginationMod :meta="props.contacts" :query="{ search: searchValue }" :limit="props.page" />
 
         <!-- Edit Contact Modal -->
         <Modal :show="showEditModal" maxWidth="xl">
@@ -380,7 +381,7 @@ const pageTo = (url) => {
                             <div class="grid grid-cols-6 gap-6">
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Name</label>
                                     <input type="text" name="name" v-model="formContact.name" id="first-name"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -391,15 +392,15 @@ const pageTo = (url) => {
                                     <label for="email"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
                                     <input type="email" name="email" v-model="formContact.email" id="email"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="example@company.com" required>
+                                        class="shadow-sm cursor-not-allowed bg-gray-200 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="example@company.com" disabled readonly>
                                 </div>
                                 <div class="col-span-6">
                                     <label for="subject"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject</label>
                                     <input type="text" name="subject" v-model="formContact.subject" id="contactname"
-                                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="contactname">
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="subject">
                                 </div>
                                 <div class="col-span-6">
                                     <label for="answer"
@@ -455,7 +456,7 @@ const pageTo = (url) => {
                             <div class="grid grid-cols-6 gap-6">
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="name"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Name</label>
                                     <input type="text" name="name" v-model="formContact.name" id="first-name"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -473,8 +474,8 @@ const pageTo = (url) => {
                                     <label for="subject"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject</label>
                                     <input type="text" name="subject" v-model="formContact.subject" id="contactname"
-                                        class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="contactname" disabled readonly>
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="subject" disabled readonly>
                                 </div>
                                 <div class="col-span-6">
                                     <label for="answer"

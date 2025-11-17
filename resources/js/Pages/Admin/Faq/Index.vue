@@ -6,8 +6,10 @@ import { limitWords } from '@/Utils/text.js'
 import { ref, reactive, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
+import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
+    page: Number,
     faqs: Object,
     search: Object
 });
@@ -353,8 +355,7 @@ const onDragEnd = async () => {
             </div>
         </div>
 
-        <Pagination :data="props.faqs" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
-
+            <PaginationMod :meta="props.faqs" :query="{ search: searchValue }" :limit="props.page" />
         
         <!-- Edit Faq Modal -->
         <Modal :show="showEditModal" maxWidth="xl">

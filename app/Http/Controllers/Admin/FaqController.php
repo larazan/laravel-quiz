@@ -12,6 +12,8 @@ class FaqController extends Controller
     //
     public function index(Request $request)
     {
+        $page = 10;
+        $sort = 'asc';
         $faqs = Faq::when($request->q, function($query, $q){
             $query->where('question', 'like', '%'.$q.'%');
         })
@@ -19,11 +21,11 @@ class FaqController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+         ->paginate($page)
         ->withQueryString();
 
         return Inertia::render('Admin/Faq/Index', [
-            'menuTasks' => 'active',
+           'page' => $page,
             'faqs' => $faqs,
             'search' => $request->only('q'),
         ]);

@@ -9,6 +9,7 @@ import ConfirmModal from '../Components/ConfirmModal.vue';
 import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
+    page: Number,
     categories: Object,
     parentOption: Object,
     search: Object
@@ -48,7 +49,7 @@ const openEditModal = (category) => {
 
 // update method
 const updateCategory = () => {
-    router.put('/admin/category/update/' + idCategory.value, formCategory);
+    router.put('/admin/category-article/update/' + idCategory.value, formCategory);
     resetForm();
 
     closeModal();
@@ -62,18 +63,24 @@ const openAddModal = () => {
 }
 
 // add method
-const addCategory = () => {
-    router.post('/admin/category/create', formCategory);
-    resetForm();
-
-    closeModal();
-
-    Swal.fire({ 
-        icon: 'success', 
-        title: page.props.flash.success, 
-        timer: 1500, 
-        showConfirmButton: false 
-    });
+const addCategory = async () => {
+    try {
+        await router.post('/admin/category-article/create', formCategory, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 // open delete modal
@@ -84,7 +91,7 @@ const openDeleteModal = (id) => {
 
 // delete method
 const deleteCategory = () => {
-    router.delete('/admin/category/delete/' + idDeleteCategory.value);
+    router.delete('/admin/category-article/delete/' + idDeleteCategory.value);
     closeModal();
 
     Swal.fire({
@@ -327,7 +334,7 @@ const pageTo = (url) => {
                                     <input type="text" v-model="formCategory.name"
                                         id="name"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Bonnie" required>
+                                        placeholder="name category" required>
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="parent"
@@ -392,7 +399,7 @@ const pageTo = (url) => {
                                     </label>
                                     <input type="text" v-model="formCategory.name" id="name"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Bonnie" required>
+                                        placeholder="name category" required>
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="parent"

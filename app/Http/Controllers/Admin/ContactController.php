@@ -12,6 +12,8 @@ class ContactController extends Controller
     //
     public function index(Request $request)
     {
+        $page = 10;
+        $sort = 'asc';
         $contacts = Contact::when($request->q, function($query, $q){
             $query->where('name', 'like', '%'.$q.'%');
         })
@@ -19,11 +21,11 @@ class ContactController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+        ->paginate($page)
         ->withQueryString();
 
         return Inertia::render('Admin/Contact/Index', [
-            'menuTasks' => 'active',
+            'page' => $page,
             'contacts' => $contacts,
             'search' => $request->only('q'),
         ]);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,6 +17,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         //
+        $page = 10;
+        $sort = 'asc';
         $users = User::when($request->q, function($query, $q){
             $query->where('first_name', 'like', '%'.$q.'%')
             ->orWhere('last_name', 'like', '%'.$q.'%');
@@ -23,11 +27,11 @@ class UserController extends Controller
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-        ->paginate(5)
+         ->paginate($page)
         ->withQueryString();
 
         return Inertia::render('Admin/User/Index', [
-            'menuTasks' => 'active',
+           'page' => $page,
             'users' => $users,
             'search' => $request->only('q'),
         ]);
@@ -117,5 +121,17 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
+    public function syncRoles(Request $request, User $user)
+    {
+        $user->syncRoles($request->roles);
+        return back()->with('success', 'Roles updated.');
+    }
+
+    public function syncPermissions(Request $request, User $user)
+    {
+        $user->syncPermissions($request->permissions);
+        return back()->with('success', 'Permissions updated.');
     }
 }

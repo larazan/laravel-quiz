@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedInteger('time_limit_seconds')->nullable();
             $table->unsignedTinyInteger('order')->default(0);
             $table->boolean('is_private')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->text('hint')->nullable(); // Optional hint for the question
             $table->timestamps();
         });

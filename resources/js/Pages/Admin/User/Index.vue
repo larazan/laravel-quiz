@@ -5,8 +5,10 @@ import Pagination from '../Components/Pagination.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref, reactive, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
+import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
+    page: Number,
     users: Object,
     search: Object
 });
@@ -390,7 +392,7 @@ const pageTo = (url) => {
             </div>
         </div>
 
-        <Pagination :data="props.users" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
+            <PaginationMod :meta="props.users" :query="{ search: searchValue }" :limit="props.page" />
 
         <!-- Edit User Modal -->
         <Modal :show="showEditModal" maxWidth="xl">

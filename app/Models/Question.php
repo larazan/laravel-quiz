@@ -20,6 +20,7 @@ class Question extends Model
         'time_limit_seconds',
         'order',
         'is_private',
+        'is_active',
         'hint',
     ];
 
@@ -40,5 +41,10 @@ class Question extends Model
     
     public function options() { 
         return $this->hasMany(Option::class); 
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
