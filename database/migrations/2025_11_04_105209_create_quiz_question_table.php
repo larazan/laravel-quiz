@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('quiz_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('question_id')->nullable()->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('order')->default(0);
+            $table->timestamps(); 
         });
     }
 

@@ -20,6 +20,9 @@ use App\Http\Controllers\Admin\PermissionController;
 
 // frontend
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\QuizController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +43,14 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/quizzes', [QuizController::class,'index'])->name('quizzes');
+Route::get('quizzes/{slug}', [QuizController::class, 'show'])->name('quizzes.show');
+
+Route::get('/faqs', [PageController::class, 'faqs'])->name('faqs.index');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -107,7 +118,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
      Route::post('/question/create', [QuestionAdminController::class, 'store'])->name('admin.question.create');
      Route::patch('/question/update/{id}', [QuestionAdminController::class, 'update'])->name('admin.question.update');
      Route::delete('/question/delete/{id}', [QuestionAdminController::class, 'destroy'])->name('admin.question.destroy');
-     Route::put('/questions/{question}/active', [QuestionAdminController::class, 'toggleActive'])->name('admin.question.approve');
+     Route::put('/questions/{question}/active', [QuestionAdminController::class, 'toggleActive'])->name('admin.question.active');
      Route::put('/questions/{question}/private', [QuestionAdminController::class, 'togglePrivate'])->name('admin.question.private');
 
     // faq

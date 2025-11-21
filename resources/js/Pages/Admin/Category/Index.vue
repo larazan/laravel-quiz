@@ -47,11 +47,24 @@ const openEditModal = (category) => {
 }
 
 // update method
-const updateCategory = () => {
-    router.put('/admin/category/update/' + idCategory.value, formCategory);
-    resetForm();
-
-    closeModal();
+const updateCategory = async () => {
+    try {
+        await router.put('/admin/category/update/' + idCategory.value, formCategory, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open add modal
@@ -62,18 +75,24 @@ const openAddModal = () => {
 }
 
 // add method
-const addCategory = () => {
-    router.post('/admin/category/create', formCategory);
-    resetForm();
-
-    closeModal();
-
-    Swal.fire({ 
-        icon: 'success', 
-        title: page.props.flash.success, 
-        timer: 1500, 
-        showConfirmButton: false 
-    });
+const addCategory = async () => {
+    try {
+        await router.post('/admin/category/create', formCategory, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open delete modal
@@ -83,17 +102,24 @@ const openDeleteModal = (id) => {
 }
 
 // delete method
-const deleteCategory = () => {
-    router.delete('/admin/category/delete/' + idDeleteCategory.value);
-    closeModal();
-
-    Swal.fire({
-        toast: true,
-        icon: "success",
-        position: "top-end",
-        showConfirmButton: false,
-        title: page.props.flash.success
-    });
+const deleteCategory = async () => {
+    try {
+        await router.delete('/admin/category/delete/' + idDeleteCategory.value, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+        
+    }
 }
 
 // search
@@ -221,10 +247,13 @@ const pageTo = (url) => {
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Parent
                                     </th>
-
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                        Status
+                                        Slug
+                                    </th>
+                                    <th scope="col"
+                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        Active
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -250,14 +279,17 @@ const pageTo = (url) => {
                                     <td
                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ category.parent_id }}</td>
+                                        <td
+                                        class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
+                                        {{ category.slug }}</td>
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
                                         
-<ToggleSwitch
-            v-model="category.is_active"
-            :update-url="route('admin.category.toggle', category.id)"
-            label=""
-          />
+                                        <ToggleSwitch
+                                                    v-model="category.is_active"
+                                                    :update-url="route('admin.category.toggle', category.id)"
+                                                    label=""
+                                                />
                                     </td>
                                     <td class="p-4 space-x-2 whitespace-nowrap">
                                         <button @click="openEditModal(category)" type="button"

@@ -7,6 +7,7 @@ import { ref, reactive, watch } from 'vue';
 import { router, Head } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
 import PaginationMod from '../Components/PaginationMod.vue';
+import ToggleSwitch from '../Components/ToggleSwitch.vue';
 
 const props = defineProps({
     page: Number,
@@ -44,11 +45,25 @@ const openEditModal = (type) => {
 }
 
 // update method
-const updateType = () => {
-    router.put('/admin/type/update/' + idType.value, formType);
-    resetForm();
-
-    closeModal();
+const updateType = async () => {
+    try {
+       await router.put('/admin/type/update/' + idType.value, formType, {
+        onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+       });
+        
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open add modal
@@ -59,11 +74,24 @@ const openAddModal = () => {
 }
 
 // add method
-const addType = () => {
-    router.post('/admin/type/create', formType);
-    resetForm();
-
-    closeModal();
+const addType = async () => {
+    try {
+        await router.post('/admin/type/create', formType, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open delete modal
@@ -73,17 +101,23 @@ const openDeleteModal = (id) => {
 }
 
 // delete method
-const deleteType = () => {
-    router.delete('/admin/type/delete/' + idDeleteType.value);
-    closeModal();
-
-    Swal.fire({
-        toast: true,
-        icon: "success",
-        position: "top-end",
-        showConfirmButton: false,
-        title: page.props.flash.success
-    });
+const deleteType = async () => {
+    try {
+        await router.delete('/admin/type/delete/' + idDeleteType.value, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // search
@@ -110,46 +144,7 @@ const pageTo = (url) => {
             <div class="w-full mb-1">
                 <!-- breadcrumb -->
                 <div class="mb-4">
-                    <nav class="flex mb-5" aria-label="Breadcrumb">
-                        <ol class="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
-                            <li class="inline-flex items-center">
-                                <a href="#"
-                                    class="inline-flex items-center text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-white">
-                                    <svg class="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
-                                        </path>
-                                    </svg>
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <div class="flex items-center">
-                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <a href="#"
-                                        class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Types</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="flex items-center">
-                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <span class="ml-1 text-gray-400 md:ml-2 dark:text-gray-500"
-                                        aria-current="page">List</span>
-                                </div>
-                            </li>
-                        </ol>
-                    </nav>
+                    
                     <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All types</h1>
                 </div>
                 <!-- end breadcrumb -->
@@ -281,9 +276,11 @@ const pageTo = (url) => {
                                         {{ type.slug }}</td>
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                                        <div class="flex items-center">
-                                            <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div> Active
-                                        </div>
+                                        <ToggleSwitch
+                                                    v-model="type.is_active"
+                                                    :update-url="route('admin.type.toggle', type.id)"
+                                                    label=""
+                                                />
                                     </td>
                                     <td class="p-4 space-x-2 whitespace-nowrap">
                                         <button @click="openEditModal(type)" type="button"

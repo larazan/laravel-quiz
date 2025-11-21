@@ -53,11 +53,24 @@ const openEditModal = (contact) => {
 }
 
 // update method
-const updateContact = () => {
-    router.put('/admin/contact/update/' + idContact.value, formContact);
-    resetForm();
-
-    closeModal();
+const updateContact = async () => {
+    try {
+        await router.put('/admin/contact/update/' + idContact.value, formContact, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open add modal
@@ -68,11 +81,24 @@ const openAddModal = () => {
 }
 
 // add method
-const addContact = () => {
-    router.post('/admin/contact/create', formContact);
-    resetForm();
-
-    closeModal();
+const addContact = async () => {
+    try {
+        await router.post('/admin/contact/create', formContact, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open delete modal
@@ -82,28 +108,32 @@ const openDeleteModal = (id) => {
 }
 
 // delete method
-const deleteContact = () => {
-    router.delete(`/admin/contact/delete/${idDeleteContact.value}`, {
-        onSuccess: () => {
-            closeModal();
-
-            Swal.fire({
-                toast: true,
-                icon: "success",
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 2000,
-                title: page.props.flash.success || "Contact deleted successfully!",
-            });
-        },
-        onError: (errors) => {
-            Swal.fire({
-                icon: "error",
-                title: "Error deleting contact",
-                text: errors.message || "Something went wrong.",
-            });
-        },
-    });
+const deleteContact = async () => {
+    try {
+       await router.delete(`/admin/contact/delete/${idDeleteContact.value}`, {
+            onSuccess: () => {
+                Swal.fire({
+                    toast: true,
+                    icon: "success",
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    title: page.props.flash.success || "Contact deleted successfully!",
+                });
+                closeModal();
+            },
+            onError: (errors) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error deleting contact",
+                    text: errors.message || "Something went wrong.",
+                });
+                closeModal();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 // search
@@ -307,10 +337,10 @@ const pageTo = (url) => {
                                         </div>
                                     </td>
                                     <td
-                                        class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+                                        class="p-4 text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
                                         {{ contact.subject }}</td>
                                     <td
-                                        class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        class="p-4 text-base font-medium max-w-sm overflow-hidden truncate text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ limitWords(contact.message, 10) }}</td>
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">

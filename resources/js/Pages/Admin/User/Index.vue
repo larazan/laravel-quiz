@@ -54,11 +54,24 @@ const openEditModal = (user) => {
 }
 
 // update method
-const updateUser = () => {
-    router.put('/admin/user/update/' + idUser.value, formUser);
-    resetForm();
-
-    closeModal();
+const updateUser = async () => {
+    try {
+        await router.put('/admin/user/update/' + idUser.value, formUser, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // open add modal
@@ -69,11 +82,26 @@ const openAddModal = () => {
 }
 
 // add method
-const addUser = () => {
-    router.post('/admin/user/create', formUser);
-    resetForm();
+const addUser = async () => {
+    try {
+       await router.post('/admin/user/create', formUser, {
+        onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+       });
+        
+    } catch (error) {
+        console.log(error);
+    }
 
-    closeModal();
 }
 
 // open delete modal
@@ -83,17 +111,25 @@ const openDeleteModal = (id) => {
 }
 
 // delete method
-const deleteUser = () => {
-    router.delete('/admin/user/delete/' + idDeleteUser.value);
-    closeModal();
+const deleteUser = async () => {
+    try {
+       await router.delete('/admin/user/delete/' + idDeleteUser.value, {
+        onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+       });        
+    } catch (error) {
+        console.log(error);
+    }
 
-    Swal.fire({
-        toast: true,
-        icon: "success",
-        position: "top-end",
-        showConfirmButton: false,
-        title: page.props.flash.success
-    });
 }
 
 // search

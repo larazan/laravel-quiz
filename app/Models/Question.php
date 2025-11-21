@@ -24,19 +24,29 @@ class Question extends Model
         'hint',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_private' => 'boolean',
+    ];
+
     /**
      * Get the quiz that owns the question.
      */
-    public function quiz()
+    // public function quiz()
+    // {
+    //     return $this->belongsTo(Quiz::class);
+    // }
+
+    public function type()
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Type::class);
     }
 
     public function quizzes()
     {
         return $this->belongsToMany(Quiz::class, 'quiz_question')
-            ->withPivot('order')
-            ->withTimestamps();
+            ->withPivot('order');
+            // ->withTimestamps();
     }
     
     public function options() { 

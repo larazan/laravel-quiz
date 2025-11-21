@@ -64,11 +64,24 @@ const openEditModal = (article) => {
 }
 
 // update method
-const updateArticle = () => {
-    router.put('/admin/article/update/' + idArticle.value, formArticle);
-    resetForm();
-
-    closeModal();
+const updateArticle = async () => {
+    try {
+        await router.put('/admin/article/update/' + idArticle.value, formArticle, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log();
+    }
 }
 
 // open add modal
@@ -79,18 +92,25 @@ const openAddModal = () => {
 }
 
 // add method
-const addArticle = () => {
-    router.post('/admin/article/create', formArticle);
-    resetForm();
+const addArticle = async () => {
+    try {
+        await router.post('/admin/article/create', formArticle, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 
-    closeModal();
-
-    Swal.fire({ 
-        icon: 'success', 
-        title: page.props.flash.success, 
-        timer: 1500, 
-        showConfirmButton: false 
-    });
 }
 
 // open delete modal
@@ -100,17 +120,25 @@ const openDeleteModal = (id) => {
 }
 
 // delete method
-const deleteArticle = () => {
-    router.delete('/admin/article/delete/' + idDeleteArticle.value);
-    closeModal();
+const deleteArticle = async () => {
+    try {
+        await router.delete('/admin/article/delete/' + idDeleteArticle.value, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 
-    Swal.fire({
-        toast: true,
-        icon: "success",
-        position: "top-end",
-        showConfirmButton: false,
-        title: page.props.flash.success
-    });
 }
 
 // search
@@ -233,6 +261,10 @@ const pageTo = (url) => {
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        IMG
+                                    </th>
+                                    <th scope="col"
+                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Title
                                     </th>
                                     <th scope="col"
@@ -256,17 +288,20 @@ const pageTo = (url) => {
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 
-                                <tr v-for="article in props.articles.data" :key="article.id"
+                                <tr v-for="(article,index) in props.articles.data" :key="article.id"
                                     class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="w-4 p-4">
                                         <div class="flex items-center">
                                             <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
                                                 class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="checkbox-1" class="sr-only">checkbox</label>
+                                            <div class="px-2 text-sm font-semibold text-gray-600">
+                                            {{ ((props.articles.current_page - 1) * props.articles.per_page) + index + 1 }}
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-                                        <div class="w-10 h-10  rounded border-2">
+                                    <td>
+                                        <div class="w-10 h-10  rounded border-2 ">
                                             <span class="flex items-center p-1">
                                                 <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
@@ -389,6 +424,9 @@ const pageTo = (url) => {
                                                 </svg>
                                             </span>
                                         </div>
+                                    </td>
+                                    <td class="flex items-center py-4 mr-2 max-w-sm overflow-hidden truncate space-x-6 whitespace-nowrap">
+                                        
                                         <!-- <img class="w-10 h-10 rounded-full" src="https://flowbite-admin-dashboard.vercel.app/images/users/neil-sims.png" alt="Neil Sims avatar"> -->
                                         <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
                                             <div class="text-base font-semibold text-gray-900 dark:text-white">
@@ -396,6 +434,11 @@ const pageTo = (url) => {
                                             </div>
                                             <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
                                                 {{ article.article_tags }}</div>
+                                            <div class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                                                <a href="{{ route('/') }}" target="_blank" class="hover:text-gray-700 hover:underline underline-offset-2">
+                                                    test.com/blog/{{  article.slug }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </td>
                                     <td

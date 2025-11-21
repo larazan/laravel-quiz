@@ -48,11 +48,24 @@ const openEditModal = (category) => {
 }
 
 // update method
-const updateCategory = () => {
-    router.put('/admin/category-article/update/' + idCategory.value, formCategory);
-    resetForm();
-
-    closeModal();
+const updateCategory = async () => {
+    try { 
+       await router.put('/admin/category-article/update/' + idCategory.value, formCategory, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+                resetForm();
+            },
+       });
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 // open add modal
@@ -90,17 +103,23 @@ const openDeleteModal = (id) => {
 }
 
 // delete method
-const deleteCategory = () => {
-    router.delete('/admin/category-article/delete/' + idDeleteCategory.value);
-    closeModal();
-
-    Swal.fire({
-        toast: true,
-        icon: "success",
-        position: "top-end",
-        showConfirmButton: false,
-        title: page.props.flash.success
-    });
+const deleteCategory = async () => {
+    try {
+        await router.delete('/admin/category-article/delete/' + idDeleteCategory.value, {
+            onSuccess: page => {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    title: page.props.flash.success
+                })
+                closeModal();
+            },
+        });
+    } catch (error) {
+        console.log(err)
+    }
 }
 
 // search
@@ -129,7 +148,7 @@ const pageTo = (url) => {
                     <!-- breadcrumb -->
                    
                     <!-- end breadcrumb -->
-                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All categories</h1>
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All categories article</h1>
                 </div>
                 <div class="sm:flex">
                     <div

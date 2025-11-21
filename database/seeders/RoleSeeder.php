@@ -23,7 +23,7 @@ class RoleSeeder extends Seeder
             'last_name' => 'fatin', 
             'username' => 'mimin', 
             'role' => 'admin', 
-            'email' => 'admin@gmail.com',
+            'email' => 'admin2@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('admin1234'),
             'remember_token' => Str::random(10),

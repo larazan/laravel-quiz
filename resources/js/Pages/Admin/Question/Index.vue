@@ -3,48 +3,43 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import Pagination from '../Components/Pagination.vue';
 import ToggleSwitch from '../Components/ToggleSwitch.vue';
-import { limitWords } from '@/Utils/text.js'
+import { limitWords, smartWordwrap } from '@/Utils/text.js'
 import { ref, reactive, watch } from 'vue';
 import { router, Head, useForm } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
+import PaginationMod from '../Components/PaginationMod.vue';
 
 const props = defineProps({
     page: Number,
-    question: Object,
+    questions: Object,
     types: Object,
     search: Object
 });
 
 const difficulties = [
-  { label: 'Easy', value: 'easy' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'Hard', value: 'hard' },
+    { label: 'Easy', value: 'easy' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Hard', value: 'hard' },
 ];
 
 
-const form = useForm({
-    title: props.question.title,
-})
-
 const formQuestion = reactive({
-    categoryId: "",
     typeId: "",
-    title: null,
-    description: null,
+    questionText: null,
     difficulty: null,
+    points: null,
     timeLimitSeconds: null,
-    displayMode: "",
+    hint: null,
     image: null,
 });
 
 const resetForm = () => {
-    formQuestion.categoryId = "";
     formQuestion.typeId = "";
-    formQuestion.title = null;
-    formQuestion.description = null;
+    formQuestion.questionText = null;
     formQuestion.difficulty = null;
+    formQuestion.points = null;
     formQuestion.timeLimitSeconds = null;
-    formQuestion.displayMode = null;
+    formQuestion.hint = null;
 }
 
 const idQuestion = ref('');
@@ -62,15 +57,14 @@ const closeModal = () => {
 
 // open edit modal
 const openEditModal = (question) => {
-    formQuestion.categoryId = question.category_id;
     formQuestion.typeId = question.type_id;
-    formQuestion.title = question.title;
-    formQuestion.description = question.description;
+    formQuestion.questionText = question.question_text;
     formQuestion.difficulty = question.difficulty;
+    formQuestion.points = question.points;
     formQuestion.timeLimitSeconds = question.time_limit_seconds;
-    formQuestion.displayMode = question.display_mode;
+    formQuestion.hint = question.hint;
     idQuestion.value = question.id;
-    
+
     showEditModal.value = true;
 }
 
@@ -96,11 +90,11 @@ const addQuestion = () => {
 
     closeModal();
 
-    Swal.fire({ 
-        icon: 'success', 
-        title: page.props.flash.success, 
-        timer: 1500, 
-        showConfirmButton: false 
+    Swal.fire({
+        icon: 'success',
+        title: page.props.flash.success,
+        timer: 1500,
+        showConfirmButton: false
     });
 }
 
@@ -128,19 +122,52 @@ const deleteQuestion = () => {
 const search = ref(props.search ?? '');
 
 watch(search, (value) => {
-    router.get('/admin/question', { q: value }, { preserveState: true, replace: true })
+    router.get('/admin/questions', { q: value }, { preserveState: true, replace: true })
 });
+
+function smartWordwrap2(str, width = 75, brk = "\n") {
+    if (!str) return "";
+
+    const regex = new RegExp(`([^ ]{${width},})`, 'g');
+    let parts = str.split(regex);
+
+    let out = "";
+
+    parts.forEach(part => {
+        if (part.includes(" ")) {
+            // normal text
+            out += part;
+        } else {
+            // long continuous word
+            let currentLineLength = out.split(brk).pop().length;
+            let charsLeft = width - (currentLineLength % width);
+
+            // fill current line then break
+            out += part.substring(0, charsLeft) + brk;
+
+            // remaining long word
+            let remaining = part.substring(charsLeft);
+            out += remaining.match(new RegExp(`.{1,${width}}`, "g")).join(brk);
+        }
+    });
+
+    // final cleanup
+    return out.match(new RegExp(`.{1,${width}}`, "g")).join(brk);
+}
+
 
 //  pagination
 const pageTo = (url) => {
-    router.get(url, search.value ? { q:search.value }: '', { preserveState: true });
+    router.get(url, search.value ? { q: search.value } : '', { preserveState: true });
 }
+
+
 </script>
 
 <template>
 
     <AdminLayout>
-
+        
         <Head>
             <title>Questionzes</title>
         </Head>
@@ -247,7 +274,7 @@ const pageTo = (url) => {
                                         Question
                                         <!-- Quiz -->
                                     </th>
-                                    
+
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Type
@@ -256,11 +283,19 @@ const pageTo = (url) => {
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        Options
+                                    </th>
+                                    <th scope="col"
+                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        Creator
+                                    </th>
+                                    <th scope="col"
+                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Time
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                         Active
+                                        Active
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
@@ -274,16 +309,20 @@ const pageTo = (url) => {
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 
-                                <tr v-for="question in props.question.data" :key="question.id"
+                                <tr v-for="(question, index) in props.questions.data" :key="question.id"
                                     class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="w-4 p-4">
-                                        <div class="flex items-center">
+                                        <div class="flex items-center ">
                                             <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
                                                 class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="checkbox-1" class="sr-only">checkbox</label>
+                                            <div class="px-2 text-sm font-semibold text-gray-600">
+                                            {{ ((props.questions.current_page - 1) * props.questions.per_page) + index + 1 }}
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
+                                    <td class="flex items-center py-4 mr-2 space-x-3 whitespace-nowrap">
+                                        
                                         <div class="w-10 h-10  rounded border-2">
                                             <span class="flex items-center p-1">
                                                 <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"
@@ -412,16 +451,32 @@ const pageTo = (url) => {
                                             <div class="text-base font-semibold text-gray-900 dark:text-white">
                                                 {{ question.question_text }}
                                             </div>
-                                            <div class="text-xs font-normal text-gray-500 dark:text-gray-400">
-                                                {{ question.quiz.title }}</div>
+                                            <div v-for="quiz in question.quizzes" :key="quiz.id">
+                                                {{ quiz.title }}
+                                            </div>
                                         </div>
                                     </td>
-                                    
+
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-xs font-semibold text-gray-700 truncate xl:max-w-xs dark:text-gray-400">
                                         <p>Type: {{ question.type.name }}</p>
                                         <p>Level: {{ question.difficulty }}</p>
                                         <p>Point: {{ question.points }}</p>
+                                    </td>
+                                    <td
+                                        class="max-w-sm p-4 overflow-hidden text-xs font-semibold text-gray-700 truncate xl:max-w-xs dark:text-gray-400">
+
+                                        <ul class="ml-4 list-disc text-gray-700">
+                                            <li v-for="opt in question.options" :key="opt.id">
+                                                {{ opt.label }}. {{ opt.text }}
+                                                <span v-if="opt.is_correct" class="text-green-600">(correct)</span>
+                                            </li>
+                                        </ul>
+
+                                    </td>
+                                    <td
+                                        class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
+                                        @{{ question.user.username }}
                                     </td>
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
@@ -471,8 +526,7 @@ const pageTo = (url) => {
             </div>
         </div>
 
-        <Pagination :data="props.question" :search="search" @page-change="(url) => console.log('Page changed:', url)" />
-
+        <PaginationMod :meta="props.questions" :query="{ search: searchValue }" :limit="props.page" />
 
         <!-- Edit Question Modal -->
         <Modal :show="showEditModal" maxWidth="xl">
@@ -498,19 +552,8 @@ const pageTo = (url) => {
                     <form @submit.prevent="updateQuestion">
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
-                                
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="category"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Category
-                                    </label>
-                                    <select v-model="formQuestion.categoryId" id="category"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option disable value="">Select category</option>
-                                        <option v-for="category in props.categories" :key="category.id"
-                                            :value="category.id">{{ category.name }}</option>
-                                    </select>
-                                </div>
+
+
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="type"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -519,29 +562,21 @@ const pageTo = (url) => {
                                     <select v-model="formQuestion.typeId" id="type"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select type</option>
-                                        <option v-for="type in props.types" :key="type.id"
-                                            :value="type.id">{{ type.name }}</option>
+                                        <option v-for="type in props.types" :key="type.id" :value="type.id">{{ type.name
+                                            }}</option>
                                     </select>
                                 </div>
-                                <div class="col-span-6">
-                                    <label for="title"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Title
-                                    </label>
-                                    <input type="text" v-model="formQuestion.title" id="title"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="title" required>
-                                </div>
+
                                 <div class="col-span-6">
                                     <label for="body"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Description
+                                        Question
                                     </label>
-                                    <textarea v-model="formQuestion.description" id="question" rows="4"
+                                    <textarea v-model="formQuestion.questionText" id="question" rows="4"
                                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Enter description here"></textarea>
+                                        placeholder="Enter question here"></textarea>
                                 </div>
-                                
+
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="difficulty"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -628,19 +663,8 @@ const pageTo = (url) => {
                     <form action="#" @submit.prevent="addQuestion">
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
-                                
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="category"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Category
-                                    </label>
-                                    <select v-model="formQuestion.categoryId" id="category"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option disable value="">Select category</option>
-                                        <option v-for="category in props.categories" :key="category.id"
-                                            :value="category.id">{{ category.name }}</option>
-                                    </select>
-                                </div>
+
+
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="type"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -649,29 +673,21 @@ const pageTo = (url) => {
                                     <select v-model="formQuestion.typeId" id="type"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                         <option disable value="">Select type</option>
-                                        <option v-for="type in props.types" :key="type.id"
-                                            :value="type.id">{{ type.name }}</option>
+                                        <option v-for="type in props.types" :key="type.id" :value="type.id">{{ type.name
+                                            }}</option>
                                     </select>
                                 </div>
-                                <div class="col-span-6">
-                                    <label for="title"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Title
-                                    </label>
-                                    <input type="text" v-model="formQuestion.title" id="title"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="title" required>
-                                </div>
+
                                 <div class="col-span-6">
                                     <label for="body"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Description
+                                        Question
                                     </label>
-                                    <textarea v-model="formQuestion.description" id="question" rows="4"
+                                    <textarea v-model="formQuestion.questionText" id="question" rows="4"
                                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Enter description here"></textarea>
+                                        placeholder="Enter question here"></textarea>
                                 </div>
-                                
+
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="difficulty"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -685,19 +701,7 @@ const pageTo = (url) => {
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="display"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Display Mode
-                                    </label>
-                                    <select v-model="formQuestion.displayMode" id="display"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option disable value="">Select display</option>
-                                        <option v-for="d in modes" :key="d.value" :value="d.value">
-                                            {{ d.label }}
-                                        </option>
-                                    </select>
-                                </div>
+
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="time"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">

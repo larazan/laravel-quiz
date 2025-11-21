@@ -20,18 +20,20 @@ class QuestionController extends Controller
         $questions = Question::whereHas('user', function (Builder $query) {
             $query->where('role', '!=', 'suspended');
         })
-            ->with('user', 'quiz', 'type', 'option')
-            ->when($request->q, function($query, $q){
-                    $query->where('question_text', 'like', '%'.$q.'%');
-                })
+        ->with('user', 'type', 'quizzes', 'options')
+        ->when($request->q, function($query, $q){
+                $query->where('question_text', 'like', '%'.$q.'%');
+            })
         // ->when(request('sort'), function ($q) {
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
         // })
-         ->paginate($page)
+        ->paginate($page)
         ->withQueryString();
 
         $types = Type::OrderBy('name', 'asc')->get();
+
+        // return $questions;
 
         return Inertia::render('Admin/Question/Index', [
             'page' => $page,

@@ -16,7 +16,7 @@ class CategoryArticle extends Model
         'name',
         'slug',
         'parent_id',
-        'status',
+        'is_active',
     ];
 
     public function getRouteKeyName()

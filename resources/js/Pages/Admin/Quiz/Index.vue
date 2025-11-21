@@ -422,6 +422,11 @@ const pageTo = (url) => {
                                             </div>
                                             <div class="text-xs font-normal text-gray-500 dark:text-gray-400">
                                                 {{ limitWords(quiz.description,5) }}</div>
+                                                <div class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                                                <a href="{{ route('/') }}" target="_blank" class="hover:text-gray-700 hover:underline underline-offset-2">
+                                                    test.com/quiz/{{  quiz.slug }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </td>
                                     <td
