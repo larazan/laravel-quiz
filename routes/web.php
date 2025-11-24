@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 // admin
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -22,7 +21,9 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\SettingController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -52,11 +53,12 @@ Route::get('/faqs', [PageController::class, 'faqs'])->name('faqs.index');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('user/{username?}', [ProfileController::class, 'show'])->name('profile');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/setting', [SettingController::class, 'edit'])->name('setting.edit');
+    Route::patch('/setting', [SettingController::class, 'update'])->name('setting.update');
+    Route::delete('/setting', [SettingController::class, 'destroy'])->name('setting.destroy');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function () {

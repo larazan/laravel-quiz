@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Quiz;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,15 +21,21 @@ class QuizController extends Controller
         })
             ->with('user', 'category')
             ->withCount('questions')
+            ->when($request->q, function($query, $q){
+                $query->where('title', 'like', '%'.$q.'%');
+            })
             // ->where('approved', true)
             ->filter(request(['search', 'user_id', 'cat', 'diff']))
             ->latest()
-            ->paginate(6)
+            ->paginate(2)
             ->withQueryString();
+
+        $categories = Category::OrderBy('name', 'asc')->get();
 
         return Inertia::render('Front/Quiz/QuizList', [
             'quizzes' => $quizzes,
-            'searchTerm' => $request->search,
+            'categories' => $categories,
+            'search' => $request->only('q'),
         ]);
     }
 

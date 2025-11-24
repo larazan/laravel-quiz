@@ -58,9 +58,11 @@ class Quiz extends Model
             $query->where('user_id', request('user_id'));
         }
 
-        if($filters['cat'] ?? false) {
-            $query->where('category_id', request('cat'));
-        }
+        $query->when($filters['cat'] ?? false, function ($query, $cat) {
+            $query->whereHas('category', function ($q) use ($cat) {
+                $q->where('name', 'like', "%{$cat}%");
+            });
+        });
 
         if($filters['diff'] ?? false) {
             $query->where('difficulty', request('diff'));

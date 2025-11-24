@@ -50,15 +50,16 @@ const changePage = (page) => {
 </script>
 
 <template>
-  <div class="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between dark:bg-gray-800 dark:border-gray-700">
+  
+  <div v-if="meta && meta.last_page > 1" class="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between dark:bg-gray-800 dark:border-gray-700">
     <!--  -->
     <div class="flex items-center mb-4 sm:mb-0">
       <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span
-          class="font-semibold text-gray-900 dark:text-white">1-{{ meta.per_page }}</span> of <span
+          class="font-semibold text-gray-900 dark:text-white">{{ meta.from }}-{{ meta.to }}</span> of <span
           class="font-semibold text-gray-900 dark:text-white">{{ meta.total }}</span></span>
     </div>
     <!--  -->
-    <nav v-if="meta && meta.last_page > 1" aria-label="Page navigation example">
+    <nav  aria-label="Page navigation example">
       <ul class="flex items-center -space-x-px h-8 text-sm">
         <li>
           <button 

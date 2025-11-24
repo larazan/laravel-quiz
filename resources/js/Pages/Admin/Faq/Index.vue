@@ -17,7 +17,8 @@ const props = defineProps({
 
 const page = usePage();
 
-const faqs = ref(page.props.faqs)
+// const faqs = ref(page.props.faqs)
+const faqs = ref(props.faqs.data ?? props.faqs ?? [])
 
 const formFaq = reactive({
     question: null,
@@ -164,7 +165,7 @@ const onDragEnd = async () => {
 
 <template>
     <AdminLayout>
-        <pre>{{ props.faqs }}</pre>
+
         <Head>
             <title>Faqs</title>
         </Head>
@@ -266,7 +267,6 @@ const onDragEnd = async () => {
                                             <label for="checkbox-all" class="sr-only">checkbox</label>
                                         </div>
                                     </th>
-                                    <th></th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Question
@@ -288,33 +288,36 @@ const onDragEnd = async () => {
                             </thead>
 
                             <!-- keep your tbody classes -->
-                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                            <!-- <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"> -->
                                 <!-- wrap your tr’s inside draggable -->
                                 <draggable 
                                     v-model="faqs" 
-                                    group="people" 
                                     @start="drag=true" 
                                     item-key="id" 
-                                    tag="template" 
+                                    tag="tbody" 
                                     handle=".drag-handle"
                                     :animation="200" 
                                     @end="onDragEnd"
+                                    class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
                                 >
                                     <template #item="{ element }">
                                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td class="w-4 p-4">
-                                                <div class="flex items-center">
+                                            <td class="w-4 p-4 cursor-grab drag-handle">
+                                                <div class="flex items-center space-x-1">
                                                     <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
                                                         class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                                     <label for="checkbox-1" class="sr-only">checkbox</label>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-gray-600">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25" />
+</svg>
+
                                                 </div>
                                             </td>
-                                            <td class="px-4 py-2 text-center cursor-grab drag-handle">☰</td>
                                             <td
-                                                class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-500 truncate xl:max-w-xs dark:text-gray-400">
+                                                class="max-w-sm p-4 overflow-hidden text-base font-normal text-gray-800 truncate xl:max-w-xs dark:text-gray-400">
                                                 {{ element.question }}</td>
                                             <td
-                                                class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                class="p-4 text-base font-medium overflow-hidden truncate max-w-xs text-gray-800 whitespace-nowrap dark:text-white">
                                                 {{ limitWords(element.answer, 10) }}</td>
                                             <td
                                                 class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
@@ -354,7 +357,9 @@ const onDragEnd = async () => {
                                     </template>
                                 </draggable>
 
-                            </tbody>
+                            <!-- </tbody> -->
+
+                            
                         </table>
                     </div>
                 </div>

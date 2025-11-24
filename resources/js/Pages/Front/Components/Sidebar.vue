@@ -3,17 +3,31 @@
 import { ref, computed, watchEffect } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 
+const toggleSidebar = () => {
+  const sidebar = document.getElementById('sidebar')
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop')
+  sidebar.classList.add('hidden')
+  sidebarBackdrop.classList.add('hidden')
+}
+
 const page = usePage()
 const openDropdown = ref(null)
 
 const isActive = (href) => page.url.startsWith(href)
 
+
+
 // 🎯 Define your sidebar menu here
 const menu = [
     {
+        label: 'Quizzes',
+        icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />`,
+        href: '/quizzes',
+    },
+    {
         label: 'Categories',
         icon: `<path fill-rule="evenodd" d="M3 6a3 3 0 0 1 3-3h2.25a3 3 0 0 1 3 3v2.25a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm9.75 0a3 3 0 0 1 3-3H18a3 3 0 0 1 3 3v2.25a3 3 0 0 1-3 3h-2.25a3 3 0 0 1-3-3V6ZM3 15.75a3 3 0 0 1 3-3h2.25a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-2.25Zm9.75 0a3 3 0 0 1 3-3H18a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3h-2.25a3 3 0 0 1-3-3v-2.25Z" clip-rule="evenodd" />`,
-        href: '/admin/dashboard',
+        href: '/categories',
     },
     {
         label: 'Types',
@@ -49,9 +63,10 @@ const menu = [
                     <a href="#" class="flex ml-2 md:mr-24">
                         <img src="/frontend/images/logo.svg" class="h-8 mr-3" alt="FlowBite Logo" />
                     </a>
-                    <button id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar"
+                    <button @click="toggleSidebar" id="toggleSidebar"  aria-expanded="true" aria-controls="sidebar"
                         class="p-2 text-indigo-500 rounded-full cursor-pointer lg:hidden hover:text-indigo-700 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        
+                        <svg id="toggleSidebarMobileClose" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
                                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                                 clip-rule="evenodd"></path>
@@ -125,10 +140,7 @@ const menu = [
 <span class="font-semibold">Create</span>
                         </a>
                         
-                        
-                        
-
-
+                    
                     </div>
                 </div>
             </div>

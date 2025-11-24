@@ -33,6 +33,20 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    Route::get('/validate-username', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'username' => ['required', 'string', 'min:3', 'max:20', 'alpha_dash'],
+        ]);
+
+        $exists = \App\Models\User::where('username', $request->username)->exists();
+
+        return response()->json([
+            'valid' => !$exists,
+            'message' => $exists ? 'Username already taken.' : 'Username is available.',
+        ]);
+    })->name('validate.username');
+
 });
 
 Route::middleware('auth')->group(function () {

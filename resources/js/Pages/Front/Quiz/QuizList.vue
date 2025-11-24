@@ -3,27 +3,62 @@ import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import FrontLayout from '@/Layouts/FrontLayout.vue';
 import { formatUS } from '@/Utils/text';
 import InputField from "@/Pages/Admin/Components/InputField.vue";
+import { ref, reactive, watch } from 'vue';
+import Pagination from "../Components/Pagination.vue";
 
 const params = route().params;
 
 const props = defineProps({
     quizzes: Object,
-    searchTerm: String,
+    categories: Object,
+    search: Object
 });
 
 const username = params.user_id ? props.quizzes.data.find(i => i.user_id === Number(params.user_id)).user.username : null;
 
-const form = useForm({
-    search: props.searchTerm,
-});
+// const form = useForm({
+//     search: props.searchTerm,
+// });
 
-const search = () => {
+const selectUser = (id) => {
     router.get(route("quizzes"), {
-        search: form.search,
-        user_id: params.user_id,
+        user_id: id,
+        search: params.search,
         cat: params.cat,
     });
 };
+
+const selectCat = (cat) => {
+    router.get(route("quizzes"), {
+        user_id: params.user_id,
+        search: params.search,
+        cat: cat,
+    });
+};
+
+const selectLevel = (diff) => {
+    router.get(route("quizzes"), {
+        user_id: params.user_id,
+        search: params.search,
+        diff: diff,
+    });
+};
+
+// const search = () => {
+//     router.get(route("quizzes"), {
+//         search: form.search,
+//         user_id: params.user_id,
+//         cat: params.cat,
+//     });
+// };
+
+// search
+const search = ref(props.search ?? '');
+
+watch(search, (value) => {
+    router.get('/quizzes', { q: value }, { preserveState: true, replace: true })
+});
+
 </script>
 
 <template>
@@ -32,70 +67,80 @@ const search = () => {
 
         <Head title="- Latest Quizzes" />
 
-    <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2">
-            <Link
-                class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
-                v-if="params.cat"
-                :href="route('quizzes', { ...params, cat: null, page: null })"
-            >
-                {{ params.cat }}
-                <i class="fa-solid fa-xmark"></i>
-            </Link>
+        <section class="bg-[#F6F7FB] dark:bg-gray-800 border-t border-b border-gray-100 dark:border-gray-700">
+            <div class="max-w-screen-xl px-4 py-0 mx-auto lg:py-10">
+                <!--  -->
+                <div
+                    class="flex md:hidden md:flex-wrap w-full md:w-auto overflow-x-auto md:overflow-none py-4  items-center gap-2 md:gap-3 mt-0 md:mt-2">
+                    
 
-            <Link
-                class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
-                v-if="params.diff"
-                :href="route('quizzes', { ...params, diff: null, page: null })"
-            >
-                {{ params.diff }}
-                <i class="fa-solid fa-xmark"></i>
-            </Link>
+                    <a v-for="category in props.categories" :key="category.id" href="#"
+                        class=" border-primary-200 hover:bg-primary-500 inline-flex items-center justify-center text-xs md:text-sm rounded-full px-4 py-[6px] md:py-[9px] leading-[22px] font-bold md:font-medium border text-gray-700 hover:text-white whitespace-nowrap">
+                        <div class="">{{ category.name }}</div>
+                    </a>
 
-            <Link
-                class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
-                v-if="params.search"
-                :href="route('quizzes', { ...params, search: null, page: null })"
-            >
-                {{ params.search }}
-                <i class="fa-solid fa-xmark"></i>
-            </Link>
-
-            <Link
-                class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
-                v-if="params.user_id"
-                :href="route('quizzes', { ...params, user_id: null, page: null })"
-            >
-                {{ username }}
-                <i class="fa-solid fa-xmark"></i>
-            </Link>
-        </div>
-
-        <div class="w-1/4">
-            <form @submit.prevent="search">
-                <InputField
-                    type="search"
-                    label=""
-                    icon="magnifying-glass"
-                    placeholder="Search..."
-                    v-model="form.search"
-                />
-            </form>
-        </div>
-    </div>
-       
-        <section class="bg-gray-50 dark:bg-gray-800 border-t border-b border-gray-100 dark:border-gray-700">
-            <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-24">
+                </div>
+                <!--  -->
                 <h2
                     class="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-gray-900 lg:text-center dark:text-white md:text-4xl">
                     Flowbite in other technologies
                 </h2>
-                <p
-                    class="mb-10 text-lg font-normal text-gray-500 dark:text-gray-400 lg:text-center lg:text-xl lg:px-64 lg:mb-16">
-                    You can now also get started with open-source component libraries built for frameworks such as
-                    React,
-                    Vue.js, Svelte and Angular.
-                </p>
+
+                <div class="flex items-center justify-between mb-4 bg-[#F6F7FB]">
+                    <div class="flex items-center gap-2">
+                        <Link
+                            class="inline-flex px-3 py-1 rounded-full border border-gray-300 shadow bg-gray-200 text-sm text-gray-500 font-medium flex2 items-center gap-2"
+                            v-if="params.cat" :href="route('quizzes', { ...params, cat: null, page: null })">
+                        {{ params.cat }}
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+
+                        </span>
+                        </Link>
+
+                        <Link
+                            class="px-3 py-1 rounded-full bg-indigo-500 text-white text-sm font-semibold capitalize flex items-center gap-1"
+                            v-if="params.diff" :href="route('quizzes', { ...params, diff: null, page: null })">
+                        {{ params.diff }}
+                        <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="size-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+
+                        </span>
+                        </Link>
+
+                        <Link class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
+                            v-if="params.search" :href="route('quizzes', { ...params, search: null, page: null })">
+                        {{ params.search }}
+                        <i class="fa-solid fa-xmark"></i>
+                        </Link>
+
+                        <Link class="px-2 py-1 rounded-md bg-indigo-500 text-white flex items-center gap-2"
+                            v-if="params.user_id" :href="route('quizzes', { ...params, user_id: null, page: null })">
+                        {{ username }}
+                        <i class="fa-solid fa-xmark"></i>
+                        </Link>
+                    </div>
+
+                    <div class="w-1/4">
+                        <form @submit.prevent="search">
+                            <select id="countries"
+                                class="block w-full px-3 py-2.5 bg-white border border-gray-50 cursor-pointer hover:border-gray-500 text-heading text-sm rounded-lg focus:ring-brand focus:border-primary-400 shadow-xs placeholder:text-body">
+                                <option selected>Choose a country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="FR">France</option>
+                                <option value="DE">Germany</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="space-y-4 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 xl:gap-8 sm:space-y-0 md:mt-12">
 
 
@@ -170,7 +215,7 @@ const search = () => {
                             <div class="px-3 py-3">
 
                                 <div class="flex items-center justify-between pb-1">
-                                    <button @click="selectCat(quiz.category.id)"
+                                    <button @click="selectCat(quiz.category.name)"
                                         class="bg-slate-500 text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-slate-700 dark:hover:bg-slate-900">
                                         {{ quiz.category.name }}
                                     </button>
@@ -209,6 +254,9 @@ const search = () => {
                     </div>
 
                 </div>
+
+                <Pagination :paginator="quizzes" />
+
             </div>
         </section>
 

@@ -18,14 +18,14 @@ onMounted(() => {
     const sidebarBackdrop = document.getElementById('sidebarBackdrop');
     const toggleSidebarMobileEl = document.getElementById('toggleSidebarMobile');
     const toggleSidebarMobileHamburger = document.getElementById('toggleSidebarMobileHamburger');
-    const toggleSidebarMobileClose = document.getElementById('toggleSidebarMobileClose');
+    // const toggleSidebarMobileClose = document.getElementById('toggleSidebarMobileClose');
     const toggleSidebarMobileSearch = document.getElementById('toggleSidebarMobileSearch');
 
     const toggleSidebarMobile = () => {
         sidebar.classList.toggle('hidden');
         sidebarBackdrop.classList.toggle('hidden');
-        toggleSidebarMobileHamburger.classList.toggle('hidden');
-        toggleSidebarMobileClose.classList.toggle('hidden');
+        // toggleSidebarMobileHamburger.classList.toggle('hidden');
+        // toggleSidebarMobileClose.classList.toggle('hidden');
     };
 
     // check before addEventListener

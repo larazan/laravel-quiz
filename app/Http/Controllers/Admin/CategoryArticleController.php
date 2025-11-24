@@ -36,17 +36,26 @@ class CategoryArticleController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug'    => 'nullable|string|max:255|unique:category_articles,slug',
         ]);
+
+        // If user leaves slug empty → auto slug from Spatie
+        if (empty($validated['slug'])) {
+            unset($validated['slug']); // allow Spatie to generate slug
+        }
 
         $name = $request->name;
         $parentId = $request->parentId;
 
-        CategoryArticle::create([
-            'name' => $name,
-            'parent_id' => $parentId,
-        ]);
+        CategoryArticle::create(
+            $validated
+            // [
+            //     'name' => $name,
+            //     'parent_id' => $parentId,
+            // ]
+        );
 
         return redirect()->route('admin.category-article.index')->with('success', 'Category created successfully.');
     }

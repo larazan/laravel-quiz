@@ -24,7 +24,7 @@ class FaqController extends Controller
         //  ->paginate($page)
         // ->withQueryString();
         
-        $faqs = Faq::where('is_active', 1)->get();
+        $faqs = Faq::where('is_active', 1)->orderBy('order_position', 'asc')->get();
 
         return Inertia::render('Admin/Faq/Index', [
            'page' => $page,

@@ -18,11 +18,13 @@ const props = defineProps({
 const formCategory = reactive({
     name: null,
     parentId: "",
+    slug: "",
 });
 
 const resetForm = () => {
     formCategory.name = null;
     formCategory.parentId = "";
+    formCategory.slug = "";
 }
 
 const idCategory = ref('');
@@ -43,6 +45,7 @@ const closeModal = () => {
 const openEditModal = (category) => {
     formCategory.name = category.name;
     formCategory.parentId = category.parent_id;
+    formCategory.slug = category.slug;
     idCategory.value = category.id;
     showEditModal.value = true;
 }
@@ -365,8 +368,15 @@ const pageTo = (url) => {
                                         <option v-for="option in props.parentOption" :key="option.id" :value="option.id">{{ option.name }}</option> 
                                     </select>
                                 </div>
-                                
-
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="slug" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Slug
+                                    </label>
+                                    <input type="text" v-model="formCategory.slug"
+                                        id="slug"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="slug">
+                                </div>
 
                             </div>
                         </div>
@@ -430,6 +440,16 @@ const pageTo = (url) => {
                                         <option v-for="option in props.parentOption" :key="option.id" :value="option.id">{{ option.name }}</option> 
                                     </select>
                                 </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="slug"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Slug</label>
+                                    <input type="text" v-model="formCategory.slug"
+                                        id="slug"
+                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="slug">
+                                </div>
+
                             </div>
                         </div>
                         <!-- Modal footer -->

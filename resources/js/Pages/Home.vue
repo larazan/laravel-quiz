@@ -1,7 +1,7 @@
 <script setup>
 import { router, useForm } from "@inertiajs/vue3";
 import FrontLayout from '@/Layouts/FrontLayout.vue';
-import { formatUS } from '@/Utils/text';
+import { formatUS, limitWords } from '@/Utils/text';
 
 const params = route().params;
 
@@ -28,13 +28,7 @@ const search = () => {
 <template>
     <FrontLayout>
         <!--  -->
-        <section class="py-8 bg-[#F6F7FB] lg:py-24 dark:bg-gray-900">
-
-
-
-        </section>
-
-        <section class="py-4 bg-white dark:bg-gray-900 lg:pt-12 lg:pb-16">
+        <section class="py-4 bg-[#F6F7FB] dark:bg-gray-900 lg:pt-12 lg:pb-16">
             <div class="px-4 mx-auto max-w-8xl lg:px-4 lg:text-center"><a
                     class="inline-flex items-center justify-between px-1 py-1 pr-4 mb-5 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200"
                     role="alert" href="/blocks/e-commerce/"><span
@@ -164,7 +158,7 @@ const search = () => {
                                 <a href="#" class="text-gray-800 hover:text-primary-600 pb-4">
                                     <h5 class="text-xl text-heading font-semibold tracking-tight">{{ quiz.title }}</h5>
                                 </a>
-                                <p class="text-base leading-tight text-gray-700">{{ quiz.description }}</p>
+                                <p class="text-base leading-tight text-gray-700">{{ limitWords(quiz.description, 10) }}</p>
                                 <div class="flex w-full items-center justify-between mt-6">
                                     <div class="block absolute2 bottom-0 inset-0 pb-0  mt-auto flex2 justify-start">
                                         <div class="flex items-center">
