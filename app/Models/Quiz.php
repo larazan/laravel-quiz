@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Sluggable\HasSlug; // Import HasSlug
 use Spatie\Sluggable\SlugOptions; // Import SlugOptions
+use Laravel\Scout\Searchable;
 
 class Quiz extends Model
 {
@@ -102,4 +103,17 @@ class Quiz extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            // 'uuid' => $this->uuid,
+            'title' => $this->title,
+            // 'locale' => $this->locale,
+            // 'description' => $this->description,
+            // 'slug' => $this->slug,
+        ];
+    }
 }
+
+// php artisan scout:import "App\Models\Quiz"

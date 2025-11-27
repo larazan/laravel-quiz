@@ -263,13 +263,16 @@ const pageTo = (url) => {
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 
-                                <tr v-for="category in props.categories.data" :key="category.id"
+                                <tr v-for="(category,index) in props.categories.data" :key="category.id"
                                     class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="w-4 p-4">
                                         <div class="flex items-center">
                                             <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
                                                 class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="checkbox-1" class="sr-only">checkbox</label>
+                                            <div class="px-2 text-sm font-semibold text-gray-600">
+                                            {{ ((props.categories.current_page - 1) * props.categories.per_page) + index + 1 }}
+                                            </div>
                                         </div>
                                     </td>
 
@@ -366,7 +369,7 @@ const pageTo = (url) => {
                                         Parent Category
                                     </label>
                                     <select v-model="formCategory.parentId" id="category-create" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option selected="">Select category</option>
+                                        <option disabled value="">Select category</option>
                                         <option v-for="option in props.parentOption" :key="option.id" :value="option.id">{{ option.name }}</option> 
                                     </select>
                                 </div>
@@ -431,7 +434,7 @@ const pageTo = (url) => {
                                         Parent Category
                                     </label>
                                     <select v-model="formCategory.parentId" id="category-create" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option selected="">Select category</option>
+                                        <option disabled value="">Select category</option>
                                         <option v-for="option in props.parentOption" :key="option.id" :value="option.id">{{ option.name }}</option> 
                                     </select>
                                 </div>

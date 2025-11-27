@@ -102,7 +102,7 @@
   </script>
   
 
-  <!-- <ImageUpload
+  <!-- <ImageUploadMod
       v-model="form.image"
       label="Profile Picture"
       :error="form.errors.image"

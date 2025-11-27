@@ -264,6 +264,10 @@ const pageTo = (url) => {
                                     </th>
                                     <th scope="col"
                                         class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                        Creator
+                                    </th>
+                                    <th scope="col"
+                                        class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                         Time
                                     </th>
                                     <th scope="col"
@@ -282,13 +286,16 @@ const pageTo = (url) => {
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
 
-                                <tr v-for="quiz in props.quizzes.data" :key="quiz.id"
+                                <tr v-for="(quiz, index) in props.quizzes.data" :key="quiz.id"
                                     class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <td class="w-4 p-4">
                                         <div class="flex items-center">
                                             <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
                                                 class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="checkbox-1" class="sr-only">checkbox</label>
+                                            <div class="px-2 text-sm font-semibold text-gray-600">
+                                            {{ ((props.quizzes.current_page - 1) * props.quizzes.per_page) + index + 1 }}
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
@@ -438,6 +445,10 @@ const pageTo = (url) => {
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
                                         {{ quiz.questions_count }}
+                                    </td>
+                                    <td
+                                        class="max-w-sm p-4 overflow-hidden text-sm font-bold text-gray-700 truncate xl:max-w-xs dark:text-gray-400">
+                                        @{{ quiz.user.username }}
                                     </td>
                                     <td
                                         class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">

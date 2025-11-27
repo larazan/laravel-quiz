@@ -64,36 +64,37 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <h5 class="text-xl font-semibold text-heading mb-6">Create an account</h5>
-            <div>
-                <InputLabel for="first_name" value="First Name" />
+            <div class="flex gap-2">
+                <div class="col-span-6 sm:col-span-3">
+                    <InputLabel for="first_name" value="First Name" />
 
-                <TextInput
-                    id="first_name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.first_name"
-                    required
-                    autofocus
-                    autocomplete="first_name"
-                />
+                    <TextInput
+                        id="first_name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.first_name"
+                        required
+                        autofocus
+                        autocomplete="first_name"
+                    />
 
-                <InputError class="mt-2" :message="form.errors.first_name" />
-            </div>
+                    <InputError class="mt-2" :message="form.errors.first_name" />
+                </div>
 
-            <div class="mt-4">
-                <InputLabel for="last_name" value="Last Name" />
+                <div class="col-span-6 sm:col-span-3">
+                    <InputLabel for="last_name" value="Last Name" />
 
-                <TextInput
-                    id="last_name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.last_name"
-                    required
-                    autofocus
-                    autocomplete="last_name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.last_name" />
+                    <TextInput
+                        id="last_name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.last_name"
+                        required
+                        autofocus
+                        autocomplete="last_name"
+                    />
+                    <InputError class="mt-2" :message="form.errors.last_name" />
+                </div>
             </div>
 
             <div class="mt-4">

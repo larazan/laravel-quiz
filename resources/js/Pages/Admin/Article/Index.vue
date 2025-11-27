@@ -1,12 +1,16 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import Modal from '@/Components/Modal.vue';
-import Pagination from '../Components/Pagination.vue';
 import ToggleSwitch from '../Components/ToggleSwitch.vue';
 import { ref, reactive, watch } from 'vue';
 import { router, Head, useForm } from '@inertiajs/vue3';
 import ConfirmModal from '../Components/ConfirmModal.vue';
 import PaginationMod from '../Components/PaginationMod.vue';
+import TagsInput from '../Components/TagsInput.vue';
+import ImageUploadMod from '../Components/ImageUploadMod.vue';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
+import MyEditor from '../Components/MyEditor.vue';
 
 const props = defineProps({
     page: Number,
@@ -15,19 +19,12 @@ const props = defineProps({
     search: Object
 });
 
-const resetForm = () => {
-    formArticle.categoryId = null;
-    formArticle.title = null;
-    formArticle.body = null;
-    formArticle.publishedAt = null;
-    formArticle.tags = null;
-} 
 
 const form = useForm({
     title: props.articles.title,
     article_tags: props.articles.article_tags
-        ? props.articles.article_tags.split(',').map(t => t.trim())
-        : []
+    ? props.articles.article_tags.split(',').map(t => t.trim())
+    : []
 })
 
 const formArticle = reactive({
@@ -36,8 +33,20 @@ const formArticle = reactive({
     body: null,
     publishedAt: null,
     tags: [],
+    image: null,
     article_image: null,
+    old_image_url: null
 });
+
+const resetForm = () => {
+    formArticle.categoryId = null;
+    formArticle.title = null;
+    formArticle.body = null;
+    formArticle.publishedAt = null;
+    formArticle.tags = null;
+    formArticle.article_image = null;
+    formArticle.old_image_url = null;
+} 
 
 const idArticle = ref('');
 const idDeleteArticle = ref('');
@@ -60,6 +69,9 @@ const openEditModal = (article) => {
     formArticle.body = article.body;
     formArticle.publishedAt = article.published_at;
     formArticle.tags = article.article_tags ? article.article_tags.split(',').map(t => t.trim()) : [];
+    formArticle.image = article.image;
+    formArticle.old_image_url = article.image;
+
     idArticle.value = article.id;
 }
 
@@ -442,8 +454,8 @@ const pageTo = (url) => {
                                         </div>
                                     </td>
                                     <td
-                                        class="max-w-sm p-4 overflow-hidden text-base font-bold text-gray-900 truncate xl:max-w-xs dark:text-gray-400">
-                                        {{ article.category_id }}</td>
+                                        class="max-w-sm p-4 overflow-hidden text-sm font-bold text-gray-600 truncate xl:max-w-xs dark:text-gray-400">
+                                        {{ article.category.name }}</td>
 
                                     <td
                                         class="p-4 text-base font-normal text-gray-900 whitespace-nowrap dark:text-white">
@@ -531,59 +543,45 @@ const pageTo = (url) => {
                                     </label>
                                     <select v-model="formArticle.categoryId" id="category"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option selected="">Select category</option>
+                                        <option disabled value="">Select category</option>
                                         <option v-for="category in props.categories" :key="category.id"
                                             :value="category.id">{{ category.name }}</option>
                                     </select>
                                 </div>
-                                <div class="col-span-6 sm:col-span-3">
+                                <div class="col-span-6">
                                     <label for="body"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Body
                                     </label>
-                                    <textarea v-model="formArticle.body" id="question" rows="4"
-                                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Enter description here"></textarea>
+                                    <MyEditor v-model="formArticle.body" />
+                                    
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="tags"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Tags
-                                    </label>
-                                    <input type="text" v-model="formArticle.tags" id="tags"
-                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="tags" required>
+                                    <TagsInput
+                                        v-model="formArticle.tags"
+                                        label="Tags"
+                                        placeholder="Type and press Enter"
+                                        />
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="title"
+                                    <label for="publish"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Publish At
                                     </label>
-                                    <div class="relative max-w-sm">
-                                        <div
-                                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                            <svg class="w-4 h-4 text-body" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                                viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z" />
-                                            </svg>
-                                        </div>
-                                        <input datepicker v-model="formArticle.publishedAt" id="default-datepicker"
-                                            type="text"
-                                            class="block w-full ps-9 pe-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand px-3 py-2.5 shadow-xs placeholder:text-body"
-                                            placeholder="Select date">
-                                    </div>
+                                    <VueDatePicker 
+                                        v-model="formArticle.publishedAt" 
+                                        :formats="{ preview: 'yyyy-MM-dd', input: 'yyyy-MM-dd' }"
+                                        model-type="yyyy-MM-dd"
+                                        placeholder="Pick a date"  
+                                    />
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label class="block mb-2.5 text-sm font-medium text-heading" for="file_input">Upload
-                                        file</label>
-                                    <input
-                                        class="cursor-pointer bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full shadow-xs placeholder:text-body"
-                                        aria-describedby="file_input_help" id="file_input" type="file">
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG,
-                                        PNG, JPG or GIF (MAX. 800x400px).</p>
+                                    <ImageUploadMod
+                                        v-model="formArticle.image"
+                                        label="Image"
+                                        :error="formArticle.errors?.image"
+                                        :preview-url="formArticle.old_image_url"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -628,25 +626,60 @@ const pageTo = (url) => {
                         <div class="p-6 space-y-6">
                             <div class="grid grid-cols-6 gap-6">
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="name"
+                                    <label for="title"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Name
+                                        Title
                                     </label>
-                                    <input type="text" v-model="formArticle.name" id="name"
+                                    <input type="text" v-model="formArticle.title" id="title"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Bonnie" required>
+                                        placeholder="title" required>
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="parent"
+                                    <label for="category"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Parent Article
+                                        Category
                                     </label>
-                                    <select v-model="formArticle.parentId" id="article-create"
+                                    <select v-model="formArticle.categoryId" id="category"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                        <option selected="">Select article</option>
-                                        <option v-for="option in props.parentOption" :key="option.id"
-                                            :value="option.id">{{ option.name }}</option>
+                                        <option disabled value="">Select category</option>
+                                        <option v-for="category in props.categories" :key="category.id"
+                                            :value="category.id">{{ category.name }}</option>
                                     </select>
+                                </div>
+                                <div class="col-span-6">
+                                    <label for="body"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Body
+                                    </label>
+                                    <MyEditor v-model="formArticle.body" />
+                                    
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <TagsInput
+                                        v-model="formArticle.tags"
+                                        label="Tags"
+                                        placeholder="Type and press Enter"
+                                        />
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="publish"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Publish At
+                                    </label>
+                                    <VueDatePicker 
+                                        v-model="formArticle.publishedAt" 
+                                        :formats="{ preview: 'yyyy-MM-dd', input: 'yyyy-MM-dd' }"
+                                        model-type="yyyy-MM-dd"
+                                        placeholder="Pick a date"  
+                                    />
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <ImageUploadMod
+                                        v-model="formArticle.image"
+                                        label="Image"
+                                        :error="formArticle.errors?.image"
+                                        :preview-url="formArticle.old_image_url"
+                                    />
                                 </div>
                             </div>
                         </div>

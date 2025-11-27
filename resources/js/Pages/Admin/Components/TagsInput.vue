@@ -28,7 +28,7 @@
           ref="inputRef"
           v-model="input"
           :placeholder="placeholder"
-          :class="['flex-1 min-w-[120px] outline-none p-1 text-sm', inputClass]"
+          :class="['flex-1 min-w-[120px] outline-none border-none focus:ring-0 p-1 text-sm', inputClass]"
           @keydown="onKeydown"
           @input="onInput"
           @blur="onBlur"
@@ -80,7 +80,10 @@
   
   const inputRef = ref(null)
   const input = ref('')
-  const innerTags = ref([...props.modelValue])
+  const innerTags = ref(
+  Array.isArray(props.modelValue) ? [...props.modelValue] : []
+)
+
   let debounceTimer = null
   const showSuggestions = ref(false)
   

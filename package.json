@@ -20,10 +20,20 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@tiptap/extension-mathematics": "^3.11.0",
+        "@tiptap/extensions": "^3.11.0",
+        "@tiptap/pm": "^3.11.0",
+        "@tiptap/starter-kit": "^3.11.0",
+        "@tiptap/vue-3": "^3.11.0",
         "@vitejs/plugin-vue": "^6.0.1",
+        "@vuepic/vue-datepicker": "^12.0.5",
         "flowbite": "^3.1.2",
+        "flowbite-datepicker": "^2.0.0",
         "flowbite-vue": "^0.2.2",
+        "katex": "^0.16.25",
+        "vue-material-design-icons": "^5.3.1",
         "vue-sweetalert2": "^5.0.11",
+        "vue3-datepicker": "^0.4.0",
         "vuedraggable": "^4.1.0"
     }
 }

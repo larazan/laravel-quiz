@@ -1,13 +1,12 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { Datepicker } from 'flowbite';
+import Datepicker from 'flowbite-datepicker';
 
 const props = defineProps({
     modelValue: String,
-    label: { type: String, default: null },
+    label: String,
     id: { type: String, default: 'datepicker' },
-    required: { type: Boolean, default: false },
-    enableTime: { type: Boolean, default: false }, // <— allow datetime picker
+    enableTime: Boolean,
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -20,17 +19,16 @@ onMounted(() => {
         format: props.enableTime ? 'yyyy-mm-dd HH:MM' : 'yyyy-mm-dd',
     });
 
-    // sync selected popup date → v-model
     inputRef.value.addEventListener('changeDate', (e) => {
         emit('update:modelValue', e.target.value);
     });
 });
 
-// sync external v-model → input
-watch(() => props.modelValue, (val) => {
-    if (inputRef.value) inputRef.value.value = val || '';
+watch(() => props.modelValue, (v) => {
+    if (inputRef.value) inputRef.value.value = v || '';
 });
 </script>
+
 
 <template>
     <div class="w-full">

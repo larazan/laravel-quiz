@@ -22,6 +22,7 @@ class ArticleController extends Controller
         $articles = Article::when($request->q, function($query, $q){
             $query->where('title', 'like', '%'.$q.'%');
         })
+        ->with('category')
         // ->when(request('sort'), function ($q) {
         //     $direction = request('direction', 'asc');
         //     $q->orderBy(request('sort'), $direction);
